@@ -2,6 +2,8 @@
 
 (require redex)
 
+(provide CS CS+EK CEK)
+
 (define-language CS
   (M V
      (let (x M) M)
@@ -74,10 +76,12 @@
 
 ;; =============================================================================
 
-(define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
-(define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
-(define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
-
-(test-->> CEK (term (,p1 () stop)) (term (stop 6)))
-(test-->> CEK (term (,p2 () stop)) (term (stop 1)))
-(test-->> CEK (term (,p3 () stop)) (term (stop 118)))
+(module+ test
+  (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
+  (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
+  (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
+  
+  (test-->> CEK (term (,p1 () stop)) (term (stop 6)))
+  (test-->> CEK (term (,p2 () stop)) (term (stop 1)))
+  (test-->> CEK (term (,p3 () stop)) (term (stop 118)))
+  (test-results))
