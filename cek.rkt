@@ -4,12 +4,12 @@
 
 (require redex "cs.rkt")
 
-(provide eval-d CS+EK CEK)
+(provide eval-d CS+EK cek)
 
 ;; Semantics:
 (define (eval-d M)
   (define results
-    (apply-reduction-relation* CEK (term (,M () stop))))
+    (apply-reduction-relation* cek (term (,M () stop))))
   (define match-reduction-result
     (term-match/single CS+EK [(stop c) (term c)]))
   (unless (= (length results) 1)
@@ -28,36 +28,47 @@
      (pr O (V* ...) (M ...) E K)))
 
 ;; Transition Rules:
-(define CEK
+(define cek
   (reduction-relation
    CS+EK
    #:domain S
    [--> (V E K)
-        (K (γ V E))]
+        (K (γ V E))
+        "cek1"]
    [--> ((let (x M_1) M_2) E K)
-        (M_1 E (lt x M_2 E K))]
+        (M_1 E (lt x M_2 E K))
+        "cek2"]
    [--> ((if0 M_1 M_2 M_3) E K)
-        (M_1 E (if M_2 M_3 E K))]
+        (M_1 E (if M_2 M_3 E K))
+        "cek3"]
    [--> ((M M_1 ...) E K)
-        (M E (ap () (M_1 ...) E K))]
+        (M E (ap () (M_1 ...) E K))
+        "cek4"]
    [--> ((O M_1 M_2 ...) E K)
-        (M_1 E (pr O () (M_2 ...) E K))]
+        (M_1 E (pr O () (M_2 ...) E K))
+        "cek5"]
    
    [--> ((lt x M ((x_1 V*_1) ...) K) V*)
-        (M ((x_1 V*_1) ... (x V*)) K)]
+        (M ((x_1 V*_1) ... (x V*)) K)
+        "cek6"]
    [--> ((if M_1 M_2 E K) 0)
-        (M_1 E K)]
+        (M_1 E K)
+        "cek7"]
    [--> ((if M_1 M_2 E K) V*)
         (M_2 E K)
-        (side-condition (not (eq? 0 (term V*))))]
+        (side-condition (not (eq? 0 (term V*))))
+        "cek8"]
    [--> ((ap (V* ...) (M M_1 ...) E K) V*_1)
         (M E (ap (V* ... V*_1) (M_1 ...) E K))]
    [--> ((ap ((cl (x_1 ...) M_1 E_1) V*_1 ...) () E K) V*_n)
-        (M_1 (extend E_1 (x_1 ...) (V*_1 ... V*_n)) K)]
+        (M_1 (extend E_1 (x_1 ...) (V*_1 ... V*_n)) K)
+        "cek9"]
    [--> ((pr O (V* ...) (M M_1 ...) E K) V*_1)
-        (M E (pr O (V* ... V*_1) (M_1 ...) E K))]
+        (M E (pr O (V* ... V*_1) (M_1 ...) E K))
+        "cek10"]
    [--> ((pr O (V* ...) () E K) V*_n)
-        (K (δ O (V* ... V*_n)))]))
+        (K (δ O (V* ... V*_n)))
+        "cek11"]))
 
 ;; Converting syntactic values to machine values:
 (define-metafunction CS+EK
