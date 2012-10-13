@@ -4,11 +4,29 @@
 
 (require redex "cs.rkt")
 
-(provide cps F simp)
+(provide cps)
 
 (define-metafunction CS
   cps : M -> M
   [(cps M) (simp (F M))])
+
+(define-metafunction CS
+  simp : M -> M
+  [(simp c) c]
+  [(simp x) x]
+  [(simp (λ (x ...) M))
+   (λ (x ...) (simp M))]
+  [(simp (let (x M_1) M_2))
+   (let (x (simp M_1)) (simp M_2))]
+  [(simp (if0 M_1 M_2 M_3))
+   (if0 (simp M_1) (simp M_2) (simp M_3))]
+  [(simp (M_1 M_2))
+   (simp (subst M_3 x M_2))
+   (where (λ (x) M_3) (simp M_1))]
+  [(simp (M_1 M_2 ...))
+   ((simp M_1) (simp M_2) ...)]
+  [(simp (O M ...))
+   (O (simp M) ...)])
 
 (define-metafunction CS
   F : M -> M
@@ -67,50 +85,6 @@
    ,(let* ([M (term (F M))]
            [k (variable-not-in (term (x ... ,M)) 'k)])
       (term (λ (,k x ...) (,M ,k))))])
-
-(define-metafunction CS
-  simp : M -> M
-  [(simp c) c]
-  [(simp x) x]
-  [(simp (λ (x ...) M))
-   (λ (x ...) (simp M))]
-  [(simp (let (x M_1) M_2))
-   (let (x (simp M_1)) (simp M_2))]
-  [(simp (if0 M_1 M_2 M_3))
-   (if0 (simp M_1) (simp M_2) (simp M_3))]
-  [(simp (M_1 M_2))
-   (simp (subst M_3 x M_2))
-   (where (λ (x) M_3) (simp M_1))]
-  [(simp (M_1 M_2 ...))
-   ((simp M_1) (simp M_2) ...)]
-  [(simp (O M ...))
-   (O (simp M) ...)])
-
-(define-metafunction CS
-  [(subst (λ (x_1) any_1) x_1 any_2)
-   (λ (x_1) any_1)]
-  [(subst (λ (x_1) any_1) x_2 any_2)
-   (λ (x_3)
-     (subst (subst-var any_1 x_1 x_3) x_2 any_2))
-   (where x_3 ,(variable-not-in (term (x_2 any_1 any_2))
-                                (term x_1)))]
-  [(subst (let (x_1 any_1) any_2) x_1 any_3)
-   (let (x_1 any_1) any_2)]
-  [(subst (let (x_1 any_1) any_2) x_2 any_3)
-   (let (x_3 (subst any_1 x_2 any_3))
-     (subst (subst-var any_2 x_1 x_3) x_2 any_3))
-   (where x_3 ,(variable-not-in (term (x_2 any_1 any_2 any_3))
-                                (term x_1)))]
-  [(subst x_1 x_1 any_1) any_1]
-  [(subst (any_2 ...) x_1 any_1)
-   ((subst any_2 x_1 any_1) ...)]
-  [(subst any_2 x_1 any_1) any_2])
-
-(define-metafunction CS
-  [(subst-var (any_1 ...) variable_1 variable_2)
-   ((subst-var any_1 variable_1 variable_2) ...)]
-  [(subst-var variable_1 variable_1 variable_2) variable_2]
-  [(subst-var any_1 variable_1 variable_2) any_1])
 
 ;; -----------------------------------------------------------------------------
 
