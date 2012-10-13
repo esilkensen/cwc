@@ -101,8 +101,4 @@
 
   (test-equal (eval-d p1) 6)
   (test-equal (eval-d p2) 1)
-  (test-equal (eval-d p3) 118)
-
-  (test-equal (eval-d p1) (eval-d (term ((F ,p1) (λ (x) x)))))
-  (test-equal (eval-d p2) (eval-d (term ((F ,p2) (λ (x) x)))))
-  (test-equal (eval-d p3) (eval-d (term ((F ,p3) (λ (x) x))))))
+  (test-equal (eval-d p3) 118))
