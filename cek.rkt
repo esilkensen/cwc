@@ -52,8 +52,8 @@
         (side-condition (not (eq? 0 (term V*))))]
    [--> ((ap (V* ...) (M M_1 ...) E K) V*_1)
         (M E (ap (V* ... V*_1) (M_1 ...) E K))]
-   [--> ((ap ((cl (x_1 ...) M_1 E_1) V_1* ...) () E K) V*_n)
-        (M_1 (extend E_1 (x_1 ...) (V_1* ... V*_n)) K)]
+   [--> ((ap ((cl (x_1 ...) M_1 E_1) V*_1 ...) () E K) V*_n)
+        (M_1 (extend E_1 (x_1 ...) (V*_1 ... V*_n)) K)]
    [--> ((pr O (V* ...) (M M_1 ...) E K) V*_1)
         (M E (pr O (V* ... V*_1) (M_1 ...) E K))]
    [--> ((pr O (V* ...) () E K) V*_n)
@@ -63,7 +63,8 @@
 (define-metafunction CS+EK
   γ : V E -> V*
   [(γ c E) c]
-  [(γ x ((x_1 V*_1) ... (x V*) (x_2 V*_2) ...)) V*]
+  [(γ x ((x_1 V*_1) ... (x V*) (x_2 V*_2) ...)) V*
+   (side-condition (not (member (term x) (term (x_2 ...)))))]
   [(γ (λ (x ...) M) E) (cl (x ...) M E)])
 
 ;; Evaluating primitive operations:
@@ -89,4 +90,8 @@
 
   (test-equal (eval-d p1) 6)
   (test-equal (eval-d p2) 1)
-  (test-equal (eval-d p3) 118))
+  (test-equal (eval-d p3) 118)
+
+  (test-equal (eval-d p1) (eval-d (term ((F ,p1) (λ (x) x)))))
+  (test-equal (eval-d p2) (eval-d (term ((F ,p2) (λ (x) x)))))
+  (test-equal (eval-d p3) (eval-d (term ((F ,p3) (λ (x) x))))))
