@@ -7,14 +7,17 @@
 (provide eval-d CS+EK cs-cek)
 
 ;; Semantics:
-(define (eval-d M)
-  (define results
-    (apply-reduction-relation* cs-cek (term (,M () stop))))
-  (define match-reduction-result
-    (term-match/single CS+EK [(stop c) (term c)]))
-  (unless (= (length results) 1)
-    (error 'eval-d "term ~s had multiple reductions: ~s" (term M) results))
-  (match-reduction-result (car results)))
+(define-metafunction CS
+  eval-d : M -> c
+  [(eval-d M)
+   ,(let* ([S (term (M () stop))]
+           [results (apply-reduction-relation* cs-cek S)])
+      (define results (apply-reduction-relation* cs-cek S))
+      (define match-reduction-result
+        (term-match/single CS+EK [(stop c) (term c)]))
+      (unless (= (length results) 1)
+        (error 'eval-d "term ~s had multiple reductions: ~s" (term M) results))
+      (match-reduction-result (car results)))])
 
 ;; Data Specifications:
 (define-extended-language CS+EK CS
@@ -84,6 +87,6 @@
   (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
   (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
 
-  (test-equal (eval-d p1) 6)
-  (test-equal (eval-d p2) 1)
-  (test-equal (eval-d p3) 118))
+  (test-equal (term (eval-d ,p1)) 6)
+  (test-equal (term (eval-d ,p2)) 1)
+  (test-equal (term (eval-d ,p3)) 118))
