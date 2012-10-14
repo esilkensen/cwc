@@ -10,8 +10,7 @@
 (define-metafunction CS
   eval-d : M -> c
   [(eval-d M)
-   ,(let* ([S (term (M () stop))]
-           [results (apply-reduction-relation* cs-cek S)])
+   ,(let ([S (term (M () stop))])
       (define results (apply-reduction-relation* cs-cek S))
       (define match-reduction-result
         (term-match/single CS+EK [(stop c) (term c)]))

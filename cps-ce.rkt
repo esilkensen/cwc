@@ -10,8 +10,8 @@
 (define-metafunction CPS
   eval-n : W -> c
   [(eval-n (λ (k) P))
-   ,(let* ([S (term (P ((k (cl x (k x) ((k stop)))))))]
-           [results (apply-reduction-relation* cps-ce S)])
+   ,(let ([S (term (P ((k (cl x (k x) ((k stop)))))))])
+      (define results (apply-reduction-relation* cps-ce S))
       (define match-reduction-result
         (term-match/single CPS+E [((k x) ((k stop) (x c))) (term c)]))
       (unless (= (length results) 1)
