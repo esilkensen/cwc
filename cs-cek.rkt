@@ -74,8 +74,7 @@
 (define-metafunction CS+EK
   γ : V E -> V*
   [(γ c E) c]
-  [(γ x ((x_1 V*_1) ... (x V*) (x_2 V*_2) ...)) V*
-   (side-condition (not (member (term x) (term (x_2 ...)))))]
+  [(γ x E) (lookup E x)]
   [(γ (λ (x ...) M) E) (cl (x ...) M E)])
 
 ;; -----------------------------------------------------------------------------

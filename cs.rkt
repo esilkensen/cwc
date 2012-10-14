@@ -5,7 +5,7 @@
 
 (require redex)
 
-(provide CS δ extend subst)
+(provide CS δ extend lookup subst)
 
 (define-language CS
   (M V
@@ -32,6 +32,12 @@
   [(extend ((x_1 any_1) ...) (x ..._n) (any ..._n))
    ((x_1 any_1) ... (x any) ...)])
 
+;; Looking up bindings in environments:
+(define-metafunction CS
+  lookup : ((x any) ...) x -> any
+  [(lookup ((x_1 any_1) ... (x any) (x_2 any_2) ...) x) any
+   (side-condition (not (member (term x) (term (x_2 ...)))))])
+   
 ;; Capture-avoiding substitution:
 (define-metafunction CS
   [(subst (λ (x_1) any_1) x_1 any_2)
