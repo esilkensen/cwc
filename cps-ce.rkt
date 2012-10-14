@@ -28,18 +28,37 @@
   (reduction-relation
    CPS+E
    #:domain S
-   [--> S S "cek1"]
-   [--> S S "cek2"]
-   [--> S S "cek3"]
-   [--> S S "cek4"]
-   [--> S S "cek5"]
-   [--> S S "cek6"]
-   [--> S S "cek7"]))
+   [--> ((k W) E_1)
+        (P (extend E_2 (x) ((μ W E_1))))
+        (where (cl x P E_2) (lookup E_1 k))
+        "ce1"]
+   [--> ((let (x W) P) E)
+        (P (extend E (x) ((μ W E))))
+        "ce2"]
+   [--> ((if0 W P_1 P_2) E)
+        ,(if (eq? (term (μ W E)) 0)
+             (term ((P_1 E)))
+             (term ((P_2 E))))
+        "ce3"]
+   [--> ((W k W_1 ...) E)
+        (P_1 (extend E_1 (k_1 x_1 ...) ((lookup E k) (μ W_1 E) ...)))
+        (where (cl (k_1 x_1 ...) P_1 E_1) (μ W E))
+        "ce4"]
+   [--> ((W (λ (x) P) W_1 ...) E)
+        (P_1 (extend E_1 (k_1 x_1 ...) ((cl x P E) (μ W_1 E) ...)))
+        (where (cl (k_1 x_1 ...) P_1 E_1) (μ W E))
+        "ce5"]
+   [--> ((O k W_1 ...) E)
+        (P_1 (extend E_1 (x) ((δ O (μ W_1 E) ...))))
+        (where (cl x P_1 E_1) (lookup E k))
+        "ce6"]
+   [--> ((O (λ (x) P) W_1 ...) E)
+        (P (extend E (x) ((δ O (μ W_1 E) ...))))
+        "ce7"]))
 
 ;; Converting values to machine values:
 (define-metafunction CPS+E
   μ : W E -> W*
   [(μ c E) c]
-  [(μ x ((x_1 W*_1) ... (x W*) (x_2 W*_2) ...)) W*
-   (side-condition (not (member (term x) (term (x_2 ...)))))]
+  [(μ x E) (lookup E x)]
   [(μ (λ (k x ...) P) E) (cl (k x ...) P E)])
