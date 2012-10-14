@@ -1,17 +1,28 @@
 #lang racket
 
-;; This file defines a transformation from CS to CPS.
+;; This file defines the abstract syntax of Core Scheme (CS) in
+;; Continuation-Passing Style (CPS), and a transformation from CS to CPS.
 
 (require redex "cs.rkt")
 
-(provide cps)
+(provide CPS cps)
 
-(define-metafunction CS
-  cps : M -> M
+(define-extended-language CPS CS
+  (P (k W)
+     (let (x W) P)
+     (if0 W P P)
+     (W k W ...)
+     (W (λ (x) P) W ...)
+     (O k W ...)
+     (O (λ (x) P) W ...))
+  (W c x (λ (k x ...) P)))
+
+(define-metafunction CPS
+  cps : M -> W
   [(cps M) (simp (F M))])
 
-(define-metafunction CS
-  simp : M -> M
+(define-metafunction CPS
+  simp : M -> P or W
   [(simp c) c]
   [(simp x) x]
   [(simp (λ (x ...) M))
@@ -28,8 +39,8 @@
   [(simp (O M ...))
    (O (simp M) ...)])
 
-(define-metafunction CS
-  F : M -> M
+(define-metafunction CPS
+  F : M -> W
   [(F V)
    ,(let* ([V (term (Φ V))]
            [k (variable-not-in V 'k)])
@@ -71,33 +82,17 @@
       (term (λ (,k)
               ,(let loop ([ms-it MS] [ts-it ts])
                  (if (null? ms-it)
-                     (term (,k ,(append (term (O)) ts)))
+                     (append (term (O ,k)) ts)
                      (let ([M_i (car ms-it)] [t_i (car ts-it)])
                        (term (,M_i (λ (,t_i) 
                                      ,(loop (cdr ms-it)
                                             (cdr ts-it)))))))))))])
 
-(define-metafunction CS
-  Φ : V -> V
+(define-metafunction CPS
+  Φ : V -> W
   [(Φ c) c]
   [(Φ x) x]
   [(Φ (λ (x ...) M))
    ,(let* ([M (term (F M))]
            [k (variable-not-in (term (x ... ,M)) 'k)])
       (term (λ (,k x ...) (,M ,k))))])
-
-;; -----------------------------------------------------------------------------
-
-(module+ test
-  (require "cs-cek.rkt")
-  (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
-  (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
-  (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
-  
-  (test-equal (eval-d p1) (eval-d (term ((F ,p1) (λ (x) x)))))
-  (test-equal (eval-d p2) (eval-d (term ((F ,p2) (λ (x) x)))))
-  (test-equal (eval-d p3) (eval-d (term ((F ,p3) (λ (x) x)))))
-
-  (test-equal (eval-d p1) (eval-d (term ((cps ,p1) (λ (x) x)))))
-  (test-equal (eval-d p2) (eval-d (term ((cps ,p2) (λ (x) x)))))
-  (test-equal (eval-d p3) (eval-d (term ((cps ,p3) (λ (x) x))))))
