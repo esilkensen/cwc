@@ -8,7 +8,7 @@
 
 ;; Semantics:
 (define-metafunction CPS
-  eval-n : W -> any
+  eval-n : W -> c
   [(eval-n (λ (k) P))
    ,(let* ([S (term (P ((k (cl x (k x) ((k stop)))))))]
            [results (apply-reduction-relation* cps-ce S)])
