@@ -16,7 +16,7 @@
   (V c x (λ (x ...) M))
   (c number)
   (O + - * /)
-  (x variable-not-otherwise-mentioned))
+  ((x k) variable-not-otherwise-mentioned))
 
 (define-metafunction CS
   [(subst (λ (x_1) any_1) x_1 any_2)
