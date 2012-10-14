@@ -17,10 +17,12 @@
      (O (λ (x) P) W ...))
   (W c x (λ (k x ...) P)))
 
+;; Transforming a CS term to β-normal form:
 (define-metafunction CPS
   cps : M -> W
   [(cps M) (simp (F M))])
 
+;; The simplification phase (β):
 (define-metafunction CPS
   simp : M -> P or W
   [(simp c) c]
@@ -39,6 +41,7 @@
   [(simp (O M ...))
    (O (simp M) ...)])
 
+;; The CPS transformation F:
 (define-metafunction CPS
   F : M -> W
   [(F V)
