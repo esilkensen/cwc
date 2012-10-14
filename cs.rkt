@@ -36,7 +36,8 @@
 (define-metafunction CS
   lookup : ((x any) ...) x -> any
   [(lookup ((x_1 any_1) ... (x any) (x_2 any_2) ...) x) any
-   (side-condition (not (member (term x) (term (x_2 ...)))))])
+   (side-condition (not (member (term x) (term (x_2 ...)))))]
+  [(lookup ((x_1 any_1) ...) x_2) #f])
    
 ;; Capture-avoiding substitution:
 (define-metafunction CS

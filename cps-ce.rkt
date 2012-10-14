@@ -29,37 +29,44 @@
   (reduction-relation
    CPS+E
    #:domain S
-   [--> ((k W) E_1)
-        (P (extend E_2 (x) ((μ W E_1))))
-        (where (cl x P E_2) (lookup E_1 k))
+   [--> ((k W) E)
+        (P (extend E_2 (x) (W*)))
+        (where ((cl x P E_2) W*)
+               ((lookup E k) (μ W E)))
         "ce1"]
    [--> ((let (x W) P) E)
-        (P (extend E (x) ((μ W E))))
+        (P (extend E (x) (W*)))
+        (where W* (μ W E))
         "ce2"]
    [--> ((if0 W P_1 P_2) E)
-        ,(if (eq? (term (μ W E)) 0)
+        ,(if (eq? (term W*) 0)
              (term (P_1 E))
              (term (P_2 E)))
+        (where W* (μ W E))
         "ce3"]
    [--> ((W k W_1 ...) E)
-        (P_1 (extend E_1 (k_1 x_1 ...) ((lookup E k) (μ W_1 E) ...)))
-        (where (cl (k_1 x_1 ...) P_1 E_1) (μ W E))
+        (P_1 (extend E_1 (k_1 x_1 ...) (W* W*_1 ...)))
+        (where ((cl (k_1 x_1 ...) P_1 E_1) W* W*_1 ...)
+               ((μ W E) (lookup E k) (μ W_1 E) ...))
         "ce4"]
    [--> ((W (λ (x) P) W_1 ...) E)
-        (P_1 (extend E_1 (k_1 x_1 ...) ((cl x P E) (μ W_1 E) ...)))
-        (where (cl (k_1 x_1 ...) P_1 E_1) (μ W E))
+        (P_1 (extend E_1 (k_1 x_1 ...) ((cl x P E) W*_1 ...)))
+        (where ((cl (k_1 x_1 ...) P_1 E_1) W*_1 ...)
+               ((μ W E) (μ W_1 E) ...))
         "ce5"]
    [--> ((O k W_1 ...) E)
-        (P_1 (extend E_1 (x) ((δ O ((μ W_1 E) ...)))))
-        (where (cl x P_1 E_1) (lookup E k))
+        (P_1 (extend E_1 (x) ((δ O (W*_1 ...)))))
+        (where ((cl x P_1 E_1) W*_1 ...)
+               ((lookup E k) (μ W_1 E) ...))
         "ce6"]
    [--> ((O (λ (x) P) W_1 ...) E)
-        (P (extend E (x) ((δ O ((μ W_1 E) ...)))))
+        (P (extend E (x) ((δ O (W*_1 ...)))))
+        (where (W*_1 ...) ((μ W_1 E) ...))
         "ce7"]))
 
 ;; Converting values to machine values:
 (define-metafunction CPS+E
-  μ : W E -> W*
+  μ : W E -> W* or #f
   [(μ c E) c]
   [(μ x E) (lookup E x)]
   [(μ (λ (k x ...) P) E) (cl (k x ...) P E)])

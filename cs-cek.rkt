@@ -35,7 +35,8 @@
    CS+EK
    #:domain S
    [--> (V E K)
-        (K (γ V E))
+        (K V*)
+        (where V* (γ V E))
         "cek1"]
    [--> ((let (x M_1) M_2) E K)
         (M_1 E (lt x M_2 E K))
@@ -49,7 +50,6 @@
    [--> ((O M_1 M_2 ...) E K)
         (M_1 E (pr O () (M_2 ...) E K))
         "cek5"]
-   
    [--> ((lt x M ((x_1 V*_1) ...) K) V*)
         (M ((x_1 V*_1) ... (x V*)) K)
         "cek6"]
@@ -74,7 +74,7 @@
 
 ;; Converting syntactic values to machine values:
 (define-metafunction CS+EK
-  γ : V E -> V*
+  γ : V E -> V* or #f
   [(γ c E) c]
   [(γ x E) (lookup E x)]
   [(γ (λ (x ...) M) E) (cl (x ...) M E)])
