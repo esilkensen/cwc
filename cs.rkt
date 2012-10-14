@@ -1,11 +1,11 @@
 #lang racket
 
-;; This file defines the abstract syntax of Core Scheme (CS) and a
-;; capture-avoiding substitution function.
+;; This file defines the abstract syntax of Core Scheme (CS) and utility
+;; metafunctions for operating on its terms.
 
 (require redex)
 
-(provide CS subst)
+(provide CS δ extend subst)
 
 (define-language CS
   (M V
@@ -18,6 +18,21 @@
   (O + - * /)
   ((x k) variable-not-otherwise-mentioned))
 
+;; Evaluating primitive operations:
+(define-metafunction CS
+  δ : O (number ...) -> number
+  [(δ + (number ...)) ,(apply + (term (number ...)))]
+  [(δ - (number ...)) ,(apply - (term (number ...)))]
+  [(δ * (number ...)) ,(apply * (term (number ...)))]
+  [(δ / (number ...)) ,(apply / (term (number ...)))])
+
+;; Extending environments:
+(define-metafunction CS
+  extend : ((x any) ...) (x ...) (any ...) -> ((x any) ...)
+  [(extend ((x_1 any_1) ...) (x ..._n) (any ..._n))
+   ((x_1 any_1) ... (x any) ...)])
+
+;; Capture-avoiding substitution:
 (define-metafunction CS
   [(subst (λ (x_1) any_1) x_1 any_2)
    (λ (x_1) any_1)]

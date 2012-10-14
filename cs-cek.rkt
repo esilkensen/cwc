@@ -1,15 +1,15 @@
 #lang racket
 
-;; This file defines the CEK-machine for Core Scheme.
+;; This file defines the CEK-machine for CS.
 
 (require redex "cs.rkt")
 
-(provide eval-d CS+EK cek)
+(provide eval-d CS+EK cs-cek)
 
 ;; Semantics:
 (define (eval-d M)
   (define results
-    (apply-reduction-relation* cek (term (,M () stop))))
+    (apply-reduction-relation* cs-cek (term (,M () stop))))
   (define match-reduction-result
     (term-match/single CS+EK [(stop c) (term c)]))
   (unless (= (length results) 1)
@@ -28,7 +28,7 @@
      (pr O (V* ...) (M ...) E K)))
 
 ;; Transition Rules:
-(define cek
+(define cs-cek
   (reduction-relation
    CS+EK
    #:domain S
@@ -77,20 +77,6 @@
   [(γ x ((x_1 V*_1) ... (x V*) (x_2 V*_2) ...)) V*
    (side-condition (not (member (term x) (term (x_2 ...)))))]
   [(γ (λ (x ...) M) E) (cl (x ...) M E)])
-
-;; Evaluating primitive operations:
-(define-metafunction CS+EK
-  δ : O (V* ...) -> V*
-  [(δ + (number ...)) ,(apply + (term (number ...)))]
-  [(δ - (number ...)) ,(apply - (term (number ...)))]
-  [(δ * (number ...)) ,(apply * (term (number ...)))]
-  [(δ / (number ...)) ,(apply / (term (number ...)))])
-
-;; Extending environments:
-(define-metafunction CS+EK
-  extend : E (x ...) (V* ...) -> E
-  [(extend ((x_1 V*_1) ...) (x ..._n) (V* ..._n))
-   ((x_1 V*_1) ... (x V*) ...)])
 
 ;; -----------------------------------------------------------------------------
 
