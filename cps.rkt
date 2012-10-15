@@ -41,7 +41,7 @@
   [(simp (O M ...))
    (O (simp M) ...)])
 
-;; The CPS transformation F:
+;; The CPS transformation (F):
 (define-metafunction CPS
   F : M -> W
   [(F V)
