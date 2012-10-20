@@ -1,0 +1,34 @@
+\documentclass[12pt]{article}
+\usepackage{url,afterpage,enumerate,amssymb,amsmath,graphicx,subfigure,tabularx,array,natbib,caption}
+\usepackage[letterpaper,margin=1.5cm]{geometry}
+\setlength{\parskip}{1ex} %--skip lines between paragraphs
+\setlength{\parindent}{0pt} %--don't indent paragraphs
+
+
+%-- Commands for header
+\renewcommand{\title}[1]{\textbf{#1}\\}
+\renewcommand{\line}{\begin{tabularx}{\textwidth}{X>{\raggedleft}X}\hline\\\end{tabularx}\\[-0.5cm]}
+\newcommand{\leftright}[2]{\begin{tabularx}{\textwidth}{X>{\raggedleft}X}#1
+\newcommand{\norm}[1]{\lVert#1\rVert}
+& #2\\\end{tabularx}\\[-0.5cm]}
+
+%-- definitions
+\newtheorem{my_def}{Definition}[section]
+
+\begin{document}
+
+\title{Project Proposal: The Essence of Compiling with Continuations}
+\line
+\leftright{\today}{CS 7400} %-- left and right positions in the header
+\leftright{Phillip Mates and Erik Silkensen}{ } \\ %-- left and right positions in the header
+
+% A first reading of a technically complex paper should leave you with a shallow understanding and a desire to understand certain aspects in more depth. The best way to express this desire is to articulate your understanding and to phrase questions in this context. These questions tend to tell you which "tools" (mathematical techniques, implementation, measurements, etc) you will need to use to find answers.
+
+Write up a one-page memo in journal-paper style that
+\begin{itemize}
+  \item summarizes your current understanding of the paper
+  \item states which aspects of the paper you would like to understand in depth
+  \item explains which tools (Redex and otherwise) you wish to use to model the paper's insights so that you gain the desired insight. Researchers tend to think of this memo as a proposal.
+\end{itemize}
+
+\end{document}
