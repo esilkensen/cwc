@@ -44,7 +44,7 @@
   Ψ : W -> W
   [(Ψ c) c]
   [(Ψ x) x]
-  [(Ψ (λ (k x ...) P)) (λ (x ...) (U M))]) ;; XXX: replace (U M) with (U P)?
+  [(Ψ (λ (k x ...) P)) (λ (x ...) (U P))])
 
 (define ->a-trans
   (reduction-relation
