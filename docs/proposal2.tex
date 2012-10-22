@@ -1,10 +1,10 @@
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 
 \usepackage{fancyhdr}
 \usepackage{geometry}
-\usepackage[square]{natbib}
+\usepackage[numbers]{natbib}
 
-\renewcommand{\bibsection}{\begin{flushleft}\textbf{\refname}\end{flushleft}}
+\renewcommand{\bibsection}{\begin{center}\textbf{\refname}\end{center}}
 
 \lhead{CS 7400 -- Principles of Programming Languages \\
   Project Proposal, due October 23, 2012}
@@ -15,21 +15,25 @@
 
 \thispagestyle{fancy}
 
-% understanding of the paper
-Continuation Passing Style (CPS) is a popular intermediate representation form
+% (1) Summarize your current understanding of the paper.
+% (2) State which aspects of the paper you would like to understand in depth.
+% (3) Explain which tools (Redex and otherwise) you wish to use to model the
+% paper's insights so that you gain the desired insight.
+
+Continuation-passing style (CPS) is a popular intermediate representation form
 in compilers that often requires several optimizations to overcome its
 complexities. The 1993 paper ``The Essence of Compiling with Continuations''
-by Flanagan et.\ al.\ shows the equivalence between CPS and A-Normal Form (ANF)
+by Flanagan et.\ al.\ shows the equivalence between CPS and A-normal form (ANF)
 intermediate representations. The authors achieve this by creating a
 translation between a CPS abstract machine and an ANF abstract machine. This
 result demonstrates that the more efficient 1-pass ANF translation can be
 used to achieve the same result as a 3-pass CPS translation.
 
-Flanagan et.\ al.\ begin with a Core Scheme (CS), which they naively convert to
-CPS using the $\mathcal{F}$ function [Fischer]. Administrative
-$\overline{\lambda}$ terms introduced by $\mathcal{F}$ are then removed using a
-$\overline{\beta}$-normalization function [Sabry]. At this point a $C_{cps}E$
-abstract machine is built to operate over
+\citet{Flanagan:1993fk} begin with a Core Scheme (CS), which they na\"{\i}vely
+convert to CPS using the $\mathcal{F}$ function~\cite{Fischer:1993ys}.
+Administrative $\overline{\lambda}$ terms introduced by $\mathcal{F}$ are then
+removed using a $\overline{\beta}$-normalization function~\cite{Sabry:1992zr}.
+At this point a $C_{cps}E$ abstract machine is built to operate over
 $\overline{\beta}(\mathcal{F}(\textit{CS}))$. The authors proceed to define the
 $C_{cps}EK$ machine, which removes some redundancy to do with \ldots.
 
@@ -54,7 +58,6 @@ in this paper by hand. ANF program transformation \ldots
 Tools/Proposal
 
 \bibliographystyle{abbrvnat}
-\nocite{*}
 \bibliography{refs}
 
 \end{document}
