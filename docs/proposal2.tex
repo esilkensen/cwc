@@ -16,48 +16,65 @@
 \thispagestyle{fancy}
 
 % (1) Summarize your current understanding of the paper.
+Compilers for higher-order languages often transform programs into
+continuation-passing style (CPS) as an intermediate representation. In the
+language of CPS terms, all procedures take a continuation argument $k$
+that represents the ``rest of the computation;'' procedures apply $k$ to their
+return value instead of returning directly. This form is beneficial to
+compilers because it enables optimizations by way of simple $\beta$- and
+$\eta$-reductions, and it simplifies code generation by resembling a low-level
+target language. However, it comes at a cost: a na\"{\i}ve CPS transformation
+greatly expands a program's size, which a realistic compiler must work to
+reduce.
+
+\citet{Flanagan:1993fk} studied the CPS transformation and its use in
+compilers, and discovered that
+
 % (2) State which aspects of the paper you would like to understand in depth.
 % (3) Explain which tools (Redex and otherwise) you wish to use to model the
 % paper's insights so that you gain the desired insight.
 
-Continuation-passing style (CPS) is a popular intermediate representation form
-in compilers that often requires several optimizations to overcome its
-complexities. The 1993 paper ``The Essence of Compiling with Continuations''
-by Flanagan et.\ al.\ shows the equivalence between CPS and A-normal form (ANF)
-intermediate representations. The authors achieve this by creating a
-translation between a CPS abstract machine and an ANF abstract machine. This
-result demonstrates that the more efficient 1-pass ANF translation can be
-used to achieve the same result as a 3-pass CPS translation.
+% Continuation-passing style (CPS) is a popular intermediate representation form
+% in compilers that often requires several optimizations to overcome its
+% complexities. The 1993 paper ``The Essence of Compiling with Continuations''
+% by Flanagan et.\ al.\ shows the equivalence between CPS and A-normal form (ANF)
+% intermediate representations. The authors achieve this by creating a
+% translation between a CPS abstract machine and an ANF abstract machine. This
+% result demonstrates that the more efficient 1-pass ANF translation can be
+% used to achieve the same result as a 3-pass CPS translation.
 
-\citet{Flanagan:1993fk} begin with a Core Scheme (CS), which they na\"{\i}vely
-convert to CPS using the $\mathcal{F}$ function~\cite{Fischer:1993ys}.
-Administrative $\overline{\lambda}$ terms introduced by $\mathcal{F}$ are then
-removed using a $\overline{\beta}$-normalization function~\cite{Sabry:1992zr}.
-At this point a $C_{cps}E$ abstract machine is built to operate over
-$\overline{\beta}(\mathcal{F}(\textit{CS}))$. The authors proceed to define the
-$C_{cps}EK$ machine, which removes some redundancy to do with \ldots.
+% \citet{Flanagan:1993fk} begin with a Core Scheme (CS), which they na\"{\i}vely
+% convert to CPS using the $\mathcal{F}$ function~\cite{Fischer:1993ys}.
+% Administrative $\overline{\lambda}$ terms introduced by $\mathcal{F}$ are then
+% removed using a $\overline{\beta}$-normalization function~\cite{Sabry:1992zr}.
+% At this point a $C_{cps}E$ abstract machine is built to operate over
+% $\overline{\beta}(\mathcal{F}(\textit{CS}))$. The authors proceed to define the
+% $C_{cps}EK$ machine, which removes some redundancy to do with \ldots.
 
-% transformations
-CS $\to$ CPS via $\mathcal{F}$ (naive CPS transformation) 
+% % transformations
+% CS $\to$ CPS via $\mathcal{F}$ (naive CPS transformation) 
 
-CPS $\to$ CPS(CS) via $\overline{\beta}$-normalization uses $C_{cps}E$
+% CPS $\to$ CPS(CS) via $\overline{\beta}$-normalization uses $C_{cps}E$
 
-$C_{cps}EK$ removes some redundancy
+% $C_{cps}EK$ removes some redundancy
 
-CPS(CS) $\to$ A(CS) via $\mathcal{U}$ (un-CPS) uses $C_{a}EK$
+% CPS(CS) $\to$ A(CS) via $\mathcal{U}$ (un-CPS) uses $C_{a}EK$
 
-% questions
-In order to formalize their argument, Flanagan et.\ al.\ utilize techniques
-widely accepted in the Programming Languages community, such as defining
-semantics in terms of abstract machines and using evaluation contexts for
-transformation reductions. On the surface these techniques seem intuitive, but
-further inspection led us to realize our inability to reason about the models
-in this paper by hand. ANF program transformation \ldots
+% % questions
+% In order to formalize their argument, Flanagan et.\ al.\ utilize techniques
+% widely accepted in the Programming Languages community, such as defining
+% semantics in terms of abstract machines and using evaluation contexts for
+% transformation reductions. On the surface these techniques seem intuitive, but
+% further inspection led us to realize our inability to reason about the models
+% in this paper by hand. ANF program transformation \ldots
 
+% % Tools/Proposal
 % Tools/Proposal
-Tools/Proposal
+
+\pagebreak
 
 \bibliographystyle{abbrvnat}
+\nocite{*}
 \bibliography{refs}
 
 \end{document}
