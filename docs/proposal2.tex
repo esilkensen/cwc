@@ -1,0 +1,60 @@
+\documentclass[12pt]{article}
+
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage[square]{natbib}
+
+\renewcommand{\bibsection}{\begin{flushleft}\textbf{\refname}\end{flushleft}}
+
+\lhead{CS 7400 -- Principles of Programming Languages \\
+  Project Proposal, due October 23, 2012}
+\rhead{Phillip Mates, Erik Silkensen \\
+  \texttt{\{mates,ejs\}@ccs.neu.edu}}
+
+\begin{document}
+
+\thispagestyle{fancy}
+
+% understanding of the paper
+Continuation Passing Style (CPS) is a popular intermediate representation form
+in compilers that often requires several optimizations to overcome its
+complexities. The 1993 paper ``The Essence of Compiling with Continuations''
+by Flanagan et.\ al.\ shows the equivalence between CPS and A-Normal Form (ANF)
+intermediate representations. The authors achieve this by creating a
+translation between a CPS abstract machine and an ANF abstract machine. This
+result demonstrates that the more efficient 1-pass ANF translation can be
+used to achieve the same result as a 3-pass CPS translation.
+
+Flanagan et.\ al.\ begin with a Core Scheme (CS), which they naively convert to
+CPS using the $\mathcal{F}$ function [Fischer]. Administrative
+$\overline{\lambda}$ terms introduced by $\mathcal{F}$ are then removed using a
+$\overline{\beta}$-normalization function [Sabry]. At this point a $C_{cps}E$
+abstract machine is built to operate over
+$\overline{\beta}(\mathcal{F}(\textit{CS}))$. The authors proceed to define the
+$C_{cps}EK$ machine, which removes some redundancy to do with \ldots.
+
+% transformations
+CS $\to$ CPS via $\mathcal{F}$ (naive CPS transformation) 
+
+CPS $\to$ CPS(CS) via $\overline{\beta}$-normalization uses $C_{cps}E$
+
+$C_{cps}EK$ removes some redundancy
+
+CPS(CS) $\to$ A(CS) via $\mathcal{U}$ (un-CPS) uses $C_{a}EK$
+
+% questions
+In order to formalize their argument, Flanagan et.\ al.\ utilize techniques
+widely accepted in the Programming Languages community, such as defining
+semantics in terms of abstract machines and using evaluation contexts for
+transformation reductions. On the surface these techniques seem intuitive, but
+further inspection led us to realize our inability to reason about the models
+in this paper by hand. ANF program transformation \ldots
+
+% Tools/Proposal
+Tools/Proposal
+
+\bibliographystyle{abbrvnat}
+\nocite{*}
+\bibliography{refs}
+
+\end{document}
