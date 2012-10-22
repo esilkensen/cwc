@@ -31,15 +31,32 @@ reduce (and effectively invert).
 of so-called $A$-reductions applied directly to a source program would yield
 a result equivalent  to that of translating into CPS, simplifying,
 and inverting. \citet{Flanagan:1993fk} clarified this correspondence and
-motivated the $A$-reductions by analyzing a sequence of abstract machines for
-a core Scheme-like language. An abstract machine simulates 
+motivated the $A$-reductions by analyzing a sequence of abstract machines to
+simulate compilation of a core Scheme-like language ($\mathit{CS}$), with and
+without continuations. In particular, they consider the CEK machine for
+$\mathit{CS}$, the CE and CEK machines for na\"{\i}ve and realistic
+$\mathit{CPS}(\mathit{CS})$, and finally the CEK machine for $A(\mathit{CS})$.
+They discuss the details of the machines and the translations between the
+languages, prove the equivalence of the CEK machines for
+$\mathit{CPS}(\mathit{CS})$ and $A(\mathit{CS})$, and conclude that compilers
+using $A$-normal forms may enjoy the benefits of CPS-based compilers without
+the overhead.
 
 % (2) State which aspects of the paper you would like to understand in depth.
-While
-
 % (3) Explain which tools (Redex and otherwise) you wish to use to model the
 % paper's insights so that you gain the desired insight.
-We plan to
+While we feel we understand the paper at a high level, we would like to
+understand the details of the abstract machines and transformations in
+more depth. To that end, we plan to implement each machine in Redex and
+experiment hands-on with example programs (there aren't many in the paper)
+to get a better feel for how each machine operates, for how a program
+expands and reduces throughout the transformations, and so on. On a first
+reading we weren't sure how the evaluation contexts in Figure 7 supported the
+reduction of $\mathit{CS}$ terms all the way to $A$-normal form, which we
+would like to work out.
+
+%TODO: Should probably be more specific about details, about what we could try
+%to understand; maybe should be more quick to details in the summary, too.
 
 % \pagebreak
 
