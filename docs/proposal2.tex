@@ -45,18 +45,42 @@ the overhead.
 % (2) State which aspects of the paper you would like to understand in depth.
 % (3) Explain which tools (Redex and otherwise) you wish to use to model the
 % paper's insights so that you gain the desired insight.
-While we feel we understand the paper at a high level, we would like to
-understand the details of the abstract machines and transformations in
-more depth. To that end, we plan to implement each machine in Redex and
-experiment hands-on with example programs (there aren't many in the paper)
-to get a better feel for how each machine operates, for how a program
-expands and reduces throughout the transformations, and so on. On a first
-reading we weren't sure how the evaluation contexts in Figure 7 supported the
-reduction of $\mathit{CS}$ terms all the way to $A$-normal form, which we
-would like to work out.
+%While we feel we understand the paper at a high level, we would like to
+%understand the details of the abstract machines and transformations in more
+%depth.  To that end, we plan to implement each machine in Redex and experiment
+%hands-on with example programs (there aren't many in the paper) to get a better
+%feel for how each machine operates, for how a program expands and reduces
+%throughout the transformations, and so on.  On a first reading we weren't sure
+%how the evaluation contexts in Figure 7 supported the reduction of
+%$\mathit{CS}$ terms all the way to $A$-normal form, which we would like to work
+%out.
 
-%TODO: Should probably be more specific about details, about what we could try
-%to understand; maybe should be more quick to details in the summary, too.
+% Paragraph about A-reductions vs beta-reductions
+While introducing A-reductions on the source language, \citet{Flanagan:1993fk}
+mention that the corresponding reduction on CPS terms is the
+$\overline{\beta}$-reduction, which removes administrative $\lambda$'s from the
+na\"{i}ve CPS translation.  In order to better understand the relation between
+A and $\overline{\beta}$ reductions, we propose to model both reductions in
+Redex.  Doing so is especially interesting since as they appear in Figure 7
+\cite{Flanagan:1993fk}, the A-reduction and evaluation context are either
+non-intuitive or in fact contain errors.
+
+% Paragraph about errors in other figures
+% TODO: finish this paragraph:
+% Errors in Figure 3 and Figure 6.
+To this end, we have identified two other small potential errors in the figures
+of \cite{Flanagan:1993fk}. TODO: explain bugs found \ldots As a means to
+resolve these suspicions, we propose to model the abstract machines (figures
+2,4,5, and 8) and CPS transformations (figures 3 and 6) from
+\cite{Flanagan:1993fk} in Redex.
+
+% Paragraph about "Running Your Research"
+% TODO: finish this paragraph:
+In addition to finding errors, these models will allow for running the paper's
+mathematics on concrete examples.
+Doing so will enable us to solidify our understanding of how code shrinks and
+grows through transformations, as well as, what redundancies introduced and
+removed via language transformations and abstract machine formulations.
 
 % \pagebreak
 
