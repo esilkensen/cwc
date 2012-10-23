@@ -2,6 +2,7 @@
 
 \usepackage{fancyhdr}
 \usepackage{geometry}
+\usepackage{stmaryrd}
 \usepackage[numbers]{natbib}
 
 \renewcommand{\bibsection}{\begin{center}\textbf{\refname}\end{center}}
@@ -66,21 +67,27 @@ Redex.  Doing so is especially interesting since as they appear in Figure 7
 non-intuitive or in fact contain errors.
 
 % Paragraph about errors in other figures
-% TODO: finish this paragraph:
 % Errors in Figure 3 and Figure 6.
 To this end, we have identified two other small potential errors in the figures
-of \cite{Flanagan:1993fk}. TODO: explain bugs found \ldots As a means to
-resolve these suspicions, we propose to model the abstract machines (figures
-2,4,5, and 8) and CPS transformations (figures 3 and 6) from
-\cite{Flanagan:1993fk} in Redex.
+of \cite{Flanagan:1993fk}.  The last rule of $\Phi$ in the CPS transformation
+figure, $\Phi \llbracket \lambda x_1 \ldots x_n . M \rrbracket = \lambda k x_1
+\ldots x_n . \mathcal{F} \llbracket M \rrbracket$, doesn't seem to use the
+newly introduced $k$ argument in the body of the $\lambda$.  In the second
+potential error, the last rule of $\Psi$ in the inverse CPS transformation
+figure, $\Psi \llbracket \lambda k x_1 \ldots x_n . P \rrbracket = \lambda x_1
+\ldots x_n . \mathcal{U} \llbracket M \rrbracket$, introduces an unspecified
+$M$ on the right hand side. As a means to resolve these suspicions and build
+our confidence in the correctness of the other figures presented, we propose to
+model the abstract machines (figures 2,4,5, and 8) and CPS transformations
+(figures 3 and 6) from \cite{Flanagan:1993fk} in Redex.
 
 % Paragraph about "Running Your Research"
 % TODO: finish this paragraph:
-In addition to finding errors, these models will allow for running the paper's
-mathematics on concrete examples.
-Doing so will enable us to solidify our understanding of how code shrinks and
-grows through transformations, as well as, what redundancies introduced and
-removed via language transformations and abstract machine formulations.
+In addition to finding errors, building executable models of the paper's
+mathematics will enable us to run the mathematics on concrete examples. \ldots
+solidify our understanding of how code shrinks and grows through
+transformations, as well as, what redundancies introduced and removed via
+language transformations and abstract machine formulations.
 
 % \pagebreak
 
