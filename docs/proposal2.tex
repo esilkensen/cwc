@@ -17,7 +17,7 @@
 \thispagestyle{fancy}
 
 % (1) Summarize your current understanding of the paper.
-Compilers for higher-order languages often transform programs into
+Compilers for higher-order languages often transform programs into the
 continuation-passing style (CPS) as an intermediate representation. In the
 language of CPS terms, all procedures take a continuation argument $k$
 that represents the ``rest of the computation;'' procedures apply $k$ to their
@@ -26,20 +26,24 @@ compilers because it enables optimizations by way of simple $\beta$- and
 $\eta$-reductions, and it simplifies code generation by resembling a low-level
 target language. However, it comes at a cost: a na\"{\i}ve CPS transformation
 greatly expands a program's size, which a realistic compiler must work to
-reduce (and effectively invert).
+reduce.
+% (and effectively invert).
 
-\citet{Sabry:1992zr} studied the CPS transformation and discovered that a set
-of so-called $A$-reductions applied directly to a source program would yield
-a result equivalent  to that of translating into CPS, simplifying,
-and inverting. \citet{Flanagan:1993fk} clarified this correspondence and
-motivated the $A$-reductions by analyzing a sequence of abstract machines to
-simulate compilation of a core Scheme-like language ($\mathit{CS}$), with and
-without continuations. In particular, they consider the CEK machine for
-$\mathit{CS}$, the CE and CEK machines for na\"{\i}ve and realistic
-$\mathit{CPS}(\mathit{CS})$, and finally the CEK machine for $A(\mathit{CS})$.
+\citet{Sabry:1992zr} observed that the transformation typically  involves
+three phases: compilers translate into CPS, simplify the result, and then
+effectively invert the translation during code generation. They showed how
+a set of so-called $A$-reductions applied directly to a source program yields a
+result equivalent to the combined effect of the CPS transformation.
+\citet{Flanagan:1993fk} clarified this correspondence and motivated the
+$A$-reductions by analyzing a sequence of abstract machines simulating the
+compilation of a core Scheme-like language ($\mathit{CS}$), with and without
+continuations. In particular, they consider the CEK machines for $\mathit{CS}$,
+$\mathit{CPS}(\mathit{CS})$, and $A(\mathit{CS})$,  where
+$\mathit{CPS}(\mathit{CS})$ and $A(\mathit{CS})$ are the languages of
+$\mathit{CS}$ terms in CPS and $A$-normal form, respectively.
 They discuss the details of the machines and the translations between the
-languages, prove the equivalence of the CEK machines for
-$\mathit{CPS}(\mathit{CS})$ and $A(\mathit{CS})$, and conclude that compilers
+languages, and prove the equivalence of the CEK machines for
+$\mathit{CPS}(\mathit{CS})$ and $A(\mathit{CS})$. They conclude that compilers
 using $A$-normal forms may enjoy the benefits of CPS-based compilers without
 the overhead.
 
