@@ -29,7 +29,7 @@ greatly expands a program's size, which a realistic compiler must work to
 reduce.
 % (and effectively invert).
 
-\citet{Sabry:1992zr} observed that the transformation typically  involves
+\citet{Sabry:1992zr} observed that the transformation typically involves
 three phases: compilers translate into CPS, simplify the result, and then
 effectively invert the translation during code generation. They showed how
 a set of so-called $A$-reductions applied directly to a source program yields a
@@ -38,7 +38,7 @@ result equivalent to the combined effect of the CPS transformation.
 $A$-reductions by analyzing a sequence of abstract machines simulating the
 compilation of a core Scheme-like language ($\mathit{CS}$), with and without
 continuations. In particular, they consider the CEK machines for $\mathit{CS}$,
-$\mathit{CPS}(\mathit{CS})$, and $A(\mathit{CS})$,  where
+$\mathit{CPS}(\mathit{CS})$, and $A(\mathit{CS})$, where
 $\mathit{CPS}(\mathit{CS})$ and $A(\mathit{CS})$ are the languages of
 $\mathit{CS}$ terms in CPS and $A$-normal form, respectively.
 They discuss the details of the machines and the translations between the
@@ -51,23 +51,23 @@ the overhead.
 % (3) Explain which tools (Redex and otherwise) you wish to use to model the
 % paper's insights so that you gain the desired insight.
 
-While we feel we understand their reasoning and the paper at a high level, we
-would like to understand the details of the abstract machines and
-transformations in more depth. To that end, we plan to implement each
+While we understand the reasoning of \citet{Flanagan:1993fk} at a high level, we
+would like to grasp the subtleties of the abstract machines and
+language transformations presented. To that end, we plan to implement each
 machine and transformation in Redex. By running our executable models of the
-paper's mathematics on concrete examples, we will gain a better understanding
+paper's mathematics on examples, we will gain a better understanding
 of how programs change throughout the transformations, how modifications
 to the machines remove redundancies, and the reasons for why a compiler
 writer may choose $A$-reductions over CPS.
 
-This project should also introduce us to some of the real-world motivation
-behind the Redex tool as a form of lightweight
-mechanization~\cite{Klein:2012uq}. We started implementing the models from the
-paper by typing them directly into Redex, which revealed what we think are
-minor errors (typos) in the na\"{i}ve and inverse CPS transformations. We also
-suspect the definition of evaluation contexts for the $A$-reductions is
-incomplete, although perhaps this is in the interest of simplifying the paper
-and is not a problem.
+Along with a deeper comprehension of the paper, this project will serve as a real-world motivator towards the use of lightweight mechanization tools such as Redex.
+%This project should also introduce us to some of the real-world motivation
+%behind the Redex tool as a form of lightweight
+%mechanization~\cite{Klein:2012uq}.
+We started implementing the models from the
+paper by typing them directly into Redex, which revealed potential
+typos in the paper's na\"{i}ve and inverse CPS transformations.
+With complete Redex models, these typos and other suspicions, such as the incompleteness of the $A$-reductions' evaluation context definition, can be validated.
 %
 % Paragraph about A-reductions vs beta-reductions
 % While introducing A-reductions on the source language, \citet{Flanagan:1993fk}
