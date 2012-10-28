@@ -9,14 +9,17 @@
 
 ;; The language A(CS):
 (define-extended-language A CPS
-  (M V
-     (let (x V) M)
-     (if0 V M M)
+  (N V
+     M
+     (let (x V) N)
+     (if0 V N N)
      (V V_1 ...)
-     (let (x (V V ...)) M)
+     (let (x (V V ...)) N)
      (O V_1 ...)
-     (let (x (O V ...)) M))
-  (V c x (λ (x ...) M))
+     (let (x (O V ...)) N))
+  (V c x (λ (x ...) N))
+  (c number)
+  (O +)
   (ε hole
      (let (x ε) M)
      (if0 ε M M)
@@ -25,12 +28,12 @@
 
 ;; Transforming a CPS term to A-normal form:
 (define-metafunction A
-  anf : W -> M
+  anf : W -> N
   [(anf (λ (k) P)) (λ (k) (U P))])
 
 ;; The inverse CPS transformation (U):
 (define-metafunction A
-  U : P -> M
+  U : P -> N
   [(U (k W)) (Ψ W)]
   [(U (let (x W) P)) (let (x (Ψ W)) (U P))]
   [(U (if0 W P_1 P_2)) (if0 (Ψ W) (U P_1) (U P_2))]
@@ -49,36 +52,52 @@
 (define ->a-trans
   (reduction-relation
    A
-   #:domain M
-   ;; [--> (in-hole ε (let (x M) M_1))
-        ;; (let (x M) (in-hole ε M_1))
-        ;; (side-condition (displayln (term ε)))
-        ;; "A1_unrestricted"]
+   #:domain N
+   ;; [--> (in-hole ε (O V_arg ...))
+        ;; (let (t (O V_arg ...)) (in-hole ε t))
+        ;; (side-condition (not (term (empty-context? ε))))
+        ;; "A3_O_unrestricted"]
    [--> (in-hole ε (let (x M) M_1))
         (let (x M) (in-hole ε M_1))
         (side-condition (and
-                          (not (term (empty-context? ε)))
-                          (not (term (fv-ε? x ε)))))
+                         (not (term (empty-context? ε)))
+                         (not (term (fv-ε? x ε)))))
         "A1"]
-  [--> (in-hole ε (if0 V M_1 M_2))
-       (if0 V (in-hole ε M_1) (in-hole ε M_2))
-       (side-condition (term (empty-context? ε)))
-       "A2"]
-  [--> (in-hole ε (V V_arg ...))
-       (let (t (V V_arg ...)) (in-hole ε t))
+   [--> (in-hole ε (if0 V M_1 M_2))
+        (if0 V (in-hole ε M_1) (in-hole ε M_2))
+        (side-condition (term (empty-context? ε)))
+        "A2"]
+   [--> (in-hole ε (V V_arg ...))
+        (let (x_new (V V_arg ...)) (in-hole ε x_new))
+        (where x_new ,(variable-not-in (term ε) 'x))
         (side-condition (and
-                          (not (term (empty-context? ε)))
-                          ;; XXX: ε != ε'[(let (z []) M)]
-                          (not (term (fv-ε? x ε)))))
-       "A3_V"]
-  [--> (in-hole ε (O V_arg ...))
-       (let (t (O V_arg ...)) (in-hole ε t))
+                         (not (term (empty-context? ε)))
+                         ;; XXX: ε != ε'[(let (z []) M)]
+                         (not (term (let-context? ε)))
+                         (not (term (fv-ε? x_new ε)))))
+        "A3_V"]
+   [--> (in-hole ε (O V_arg ...))
+        (let (x_new (O V_arg ...)) (in-hole ε x_new))
+        (where x_new ,(variable-not-in (term ε) 'x))
+        (side-condition (displayln (term ε)))
+        (side-condition (displayln 
+                          `(
+                           ,(not (term (empty-context? ε)))
+                           ;; XXX: ε != ε'[(let (z []) M)]
+                           ,(not (term (let-context? ε)))
+                           ,(not (term (fv-ε? x_new ε))))))
         (side-condition (and
-                          (not (term (empty-context? ε)))
-                          ;; XXX: ε != ε'[(let (z []) M)]
-                          (not (term (fv-ε? x ε)))))
-       "A3_O"]))
+                         (not (term (empty-context? ε)))
+                         ;; XXX: ε != ε'[(let (z []) M)]
+                         (not (term (let-context? ε)))
+                         (not (term (fv-ε? x_new ε)))))
+        "A3_O"]))
 
+;; Let shaped context
+(define-metafunction A
+  let-context? : ε -> #t or #f
+  [(let-context? (let (x ε) M)) #t]
+  [(let-context? ε) #f])
 
 ;; Is ε an empty context?
 (define-metafunction A
@@ -99,14 +118,22 @@
          (term (fv? x M_l))
          (term (fv? x M_r)))]
   [(fv-ε? x (O V ... ε M ...))
-   ,(and (term (fv-ε? x ε))
-         (term (fv? x V ...))
-         (term (fv? x M ...)))]
+   ,(andmap identity
+            (flatten
+             `(,(term (fv-ε? x ε))
+               ,(term ((fv? x V) ...))
+               ,(term ((fv? x M) ...)))))
+   (side-condition (displayln "in fv-e, second to lsat"))
+   ]
   [(fv-ε? x (V V_arg ... ε M ...))
-   ,(and (term (fv-ε? x ε))
-         (term (fv? x V))
-         (term (fv? x V_arg ...))
-         (term (fv? x M ...)))])
+   ,(andmap identity
+            (flatten
+              `(,(term (fv-ε? x ε))
+                ,(term (fv? x V))
+                ,(term (fv? x V_arg ...))
+                ,(term (fv? x M ...)))))
+   (side-condition (displayln "in fv-e, lsat"))
+   ])
 
 ;; Is x a free variable in M?
 (define-metafunction A
@@ -132,7 +159,7 @@
                  (term (fv? x V_1 ...))))]
 
   ;; operation applications
-  [(fv? x (O V_1 ...)) ,(andmap (λ (x) x) (term (fv? x V_1 ...)))]
+  [(fv? x (O V_1 ...)) ,(andmap identity (term ((fv? x V_1) ...)))]
   [(fv? x (let (x (O V ...)) M)) #f]
   [(fv? x (let (y (O V ...)) M))
    ,(and (term (fv? x M))
@@ -150,6 +177,8 @@
 (define e1 (term (let (x 1) x)))
 (define e2 (term ((λ (x y) x) 1 2)))
 (define e3 (term (let (z 1) ((λ (x y) z) 1 2))))
+(define e4 (term (+ (+ 2 2) (let (x (1)) (+ x 1)))))
+(define e5 (term (+ (+ 2 2) 3)))
 
 (test-equal (term (fv? x ,e1)) #f)
 (test-equal (term (fv? x ,e2)) #f)
@@ -168,8 +197,13 @@
 (test-equal (term (fv-ε? y ,E2)) #f)
 (test-equal (term (fv-ε? z ,E2)) #t)
 
-(for/and ((an-s (list e1 e2 e3)))
-           (redex-match? A M an-s))
+;; In CS language
+(for/and ((an-s (list e1 e2 e3 e4 e5)))
+  (redex-match? A M an-s))
+
+;; In A Language
+(for/and ((an-s (list e1 e2 e3 e4 e5)))
+  (redex-match? A N an-s))
 
 ;; test ->a-trans
-(traces ->a-trans e3)
+(traces ->a-trans e5)
