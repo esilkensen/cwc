@@ -22,6 +22,7 @@
   (O +)
   (ε hole
      (let (x ε) M)
+     (let (x V) ε)
      (if0 ε M M)
      (O V ... ε M ...)
      (V V ... ε M ...)))
@@ -49,49 +50,58 @@
   [(Ψ x) x]
   [(Ψ (λ (k x ...) P)) (λ (x ...) (U P))])
 
-(define ->a-trans
-  (reduction-relation
-   A
-   #:domain N
-   ;; [--> (in-hole ε (O V_arg ...))
-        ;; (let (t (O V_arg ...)) (in-hole ε t))
-        ;; (side-condition (not (term (empty-context? ε))))
-        ;; "A3_O_unrestricted"]
-   [--> (in-hole ε (let (x M) M_1))
-        (let (x M) (in-hole ε M_1))
-        (side-condition (and
-                         (not (term (empty-context? ε)))
-                         (not (term (fv-ε? x ε)))))
-        "A1"]
-   [--> (in-hole ε (if0 V M_1 M_2))
-        (if0 V (in-hole ε M_1) (in-hole ε M_2))
-        (side-condition (term (empty-context? ε)))
-        "A2"]
-   [--> (in-hole ε (V V_arg ...))
-        (let (x_new (V V_arg ...)) (in-hole ε x_new))
-        (where x_new ,(variable-not-in (term ε) 'x))
-        (side-condition (and
-                         (not (term (empty-context? ε)))
-                         ;; XXX: ε != ε'[(let (z []) M)]
-                         (not (term (let-context? ε)))
-                         (not (term (fv-ε? x_new ε)))))
-        "A3_V"]
-   [--> (in-hole ε (O V_arg ...))
-        (let (x_new (O V_arg ...)) (in-hole ε x_new))
-        (where x_new ,(variable-not-in (term ε) 'x))
-        (side-condition (displayln (term ε)))
-        (side-condition (displayln 
-                          `(
-                           ,(not (term (empty-context? ε)))
-                           ;; XXX: ε != ε'[(let (z []) M)]
-                           ,(not (term (let-context? ε)))
-                           ,(not (term (fv-ε? x_new ε))))))
-        (side-condition (and
-                         (not (term (empty-context? ε)))
-                         ;; XXX: ε != ε'[(let (z []) M)]
-                         (not (term (let-context? ε)))
-                         (not (term (fv-ε? x_new ε)))))
-        "A3_O"]))
+(define-metafunction A
+  a-trans : M ε -> N
+
+  ;; Var
+  [(a-trans x ε) (in-hole ε x)]
+  ;; A2
+  [(a-trans (if0 V M_1 M_2) ε)
+   (if0 V (a-trans (in-hole ε M_1) hole) (a-trans (in-hole ε M_2) hole))
+   (side-condition (term (empty-context? ε)))]
+
+  [(a-trans (if0 M_0 M_1 M_2) ε)
+   (a-trans M_0 (in-hole ε (if0 hole M_1 M_2)))]
+
+  ;; A3 V
+  [(a-trans (V V_arg ...) ε)
+   (let (x_new (V V_arg ...)) (a-trans (in-hole ε x_new) hole))
+   (where x_new ,(variable-not-in (term ε) 'x))
+   (side-condition (and
+                     (not (term (empty-context? ε)))
+                      (not (term (let-context? ε)))
+                      (not (term (fv-ε? x_new ε)))))]
+  [(a-trans (V V_arg ... M_0 M_rest ...) ε)
+   (a-trans M_0 (in-hole ε (V V_arg ... hole M_rest ...)))]
+
+  ;; A3 O
+  [(a-trans (O V_arg ...) ε)
+   (let (x_new (O V_arg ...)) (a-trans (in-hole ε x_new) hole))
+   (where x_new ,(variable-not-in (term ε) 'x))
+   (side-condition
+     (and (not (term (empty-context? ε)))
+          (not (term (let-context? ε)))
+          (not (term (fv-ε? x_new ε)))))]
+
+  [(a-trans (O V ... M_0) ε)
+   (a-trans M_0 (in-hole ε (O V ... hole)))]
+  [(a-trans (O V ... M_0 M_rest ...) ε)
+   (a-trans M_0 (in-hole ε (O V ... hole M_rest ...)))]
+
+  ;; A1
+  ;; skip over A-bind
+  [(a-trans (let (x V) M) ε)
+   (a-trans M (in-hole ε (let (x V) hole)))]
+  ;; skip over A-bind-prim-op
+  [(a-trans (let (x (O V ...)) M) ε)
+   (a-trans M (in-hole ε (let (x (O V ...)) hole)))]
+  ;; skip over A-bind-call
+  [(a-trans (let (x (V V_arg ...)) M) ε)
+   (a-trans M (in-hole ε (let (x (V V_arg ...)) hole)))]
+
+  ;; a-trans right-hand-side of bind
+  [(a-trans (let (x M_0) M_1) ε)
+   (a-trans M_0 (in-hole ε (let (x hole) M_1)))])
 
 ;; Let shaped context
 (define-metafunction A
@@ -117,23 +127,27 @@
    ,(and (term (fv-ε? x ε))
          (term (fv? x M_l))
          (term (fv? x M_r)))]
+
+  [(fv-ε? x (let (x V) ε)) #f]
+  [(fv-ε? x (let (x_1 V) ε))
+   ,(andmap identity
+            (flatten
+             `(,(term (fv-ε? x ε))
+               ,(term (fv? x V)))))]
+
   [(fv-ε? x (O V ... ε M ...))
    ,(andmap identity
             (flatten
              `(,(term (fv-ε? x ε))
                ,(term ((fv? x V) ...))
-               ,(term ((fv? x M) ...)))))
-   (side-condition (displayln "in fv-e, second to lsat"))
-   ]
+               ,(term ((fv? x M) ...)))))]
   [(fv-ε? x (V V_arg ... ε M ...))
    ,(andmap identity
             (flatten
               `(,(term (fv-ε? x ε))
                 ,(term (fv? x V))
                 ,(term (fv? x V_arg ...))
-                ,(term (fv? x M ...)))))
-   (side-condition (displayln "in fv-e, lsat"))
-   ])
+                ,(term (fv? x M ...)))))])
 
 ;; Is x a free variable in M?
 (define-metafunction A
@@ -159,7 +173,7 @@
                  (term (fv? x V_1 ...))))]
 
   ;; operation applications
-  [(fv? x (O V_1 ...)) ,(andmap identity (term ((fv? x V_1) ...)))]
+  [(fv? x (O M_1 ...)) ,(andmap identity (term ((fv? x M_1) ...)))]
   [(fv? x (let (x (O V ...)) M)) #f]
   [(fv? x (let (y (O V ...)) M))
    ,(and (term (fv? x M))
@@ -168,21 +182,24 @@
 
   ;; Values
   [(fv? x x) #t]
-  [(fv? x x_1) #t]
-  [(fv? x c) #t]
+  [(fv? x x_1) #f]
+  [(fv? x c) #f]
   [(fv? x (λ (x_l ... x x_r ...) M)) #f]
   [(fv? x (λ (x_arg ...) M)) (fv? x M)])
 
 ;; Test fv?
 (define e1 (term (let (x 1) x)))
 (define e2 (term ((λ (x y) x) 1 2)))
-(define e3 (term (let (z 1) ((λ (x y) z) 1 2))))
+(define e3 (term (let (z 1) (((λ (x y) z) 1) 2))))
 (define e4 (term (+ (+ 2 2) (let (x (1)) (+ x 1)))))
 (define e5 (term (+ (+ 2 2) 3)))
+(define e6 (term (+ (+ 2 2) (let (x 1) (+ x 9)))))
 
 (test-equal (term (fv? x ,e1)) #f)
 (test-equal (term (fv? x ,e2)) #f)
-(test-equal (term (fv? z ,e2)) #t)
+(test-equal (term (fv? z ,e2)) #f)
+(test-equal (term (fv? x ,e5)) #f)
+(test-equal (term (fv? z 3)) #f)
 
 (define E0 (term hole))
 (define E1 (term (let (x hole) x)))
@@ -195,7 +212,7 @@
 (test-equal (term (fv-ε? x ,E1)) #f)
 (test-equal (term (fv-ε? x ,E2)) #f)
 (test-equal (term (fv-ε? y ,E2)) #f)
-(test-equal (term (fv-ε? z ,E2)) #t)
+(test-equal (term (fv-ε? z ,E2)) #f)
 
 ;; In CS language
 (for/and ((an-s (list e1 e2 e3 e4 e5)))
@@ -205,5 +222,5 @@
 (for/and ((an-s (list e1 e2 e3 e4 e5)))
   (redex-match? A N an-s))
 
-;; test ->a-trans
-(traces ->a-trans e5)
+;; Closer, but still not right.
+(term (a-trans ,e6 hole))
