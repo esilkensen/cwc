@@ -5,7 +5,7 @@
 
 (require redex)
 
-(provide CS δ extend lookup subst)
+(provide CS δ extend lookup subst =α)
 
 (define-language CS
   (M V
@@ -65,3 +65,64 @@
    ((subst-var any_1 variable_1 variable_2) ...)]
   [(subst-var variable_1 variable_1 variable_2) variable_2]
   [(subst-var any_1 variable_1 variable_2) any_1])
+
+;; Alpha equivalence:
+(define-metafunction CS
+  =α : M M -> #t or #f
+  [(=α M_1 M_2)
+   ,(equal? (term (deBruijn M_1))
+            (term (deBruijn M_2)))])
+
+(define-extended-language CS-D CS
+  (N W
+     (let (n N) N)
+     (if0 N N N)
+     (N N ...)
+     (O N ...))
+  (W c x (λ (n ...) N))
+  (E ((x n) ...))
+  (n number))
+
+(define *ind* 0)
+(define (get-ind) *ind*)
+(define (reset-ind) (set! *ind* 0))
+(define (next-ind) (set! *ind* (+ *ind* 1)) *ind*)
+
+(define-metafunction CS-D
+  deBruijn : M -> N
+  [(deBruijn M)
+   ,(begin
+      (caching-enabled? #f) ;; pattern matching depends on *ind*
+      (reset-ind)
+      (term (deBruijn-acc M ())))])
+
+(define-metafunction CS-D
+  deBruijn-acc : M E -> N
+  [(deBruijn-acc c E) c]
+  [(deBruijn-acc x E)
+   ,(or (term (lookup E x)) (term x))]
+  [(deBruijn-acc (λ (x ...) M_1) E)
+   ,(let ([n_i (map (λ (x_i) (next-ind)) (term (x ...)))])
+      (term (λ ,n_i (deBruijn-acc M_1 (extend E (x ...) ,n_i)))))]
+  [(deBruijn-acc (let (x M_1) M_2) E)
+   ,(let* ([ind (next-ind)]
+           [M_3 (term (deBruijn-acc M_1 E))]
+           [M_4 (term (deBruijn-acc M_2 (extend E (x) (,ind))))])
+      (term (let (,ind ,M_3) ,M_4)))]
+  [(deBruijn-acc (if0 M_1 M_2 M_3) E)
+   ,(let* ([M_4 (term (deBruijn-acc M_1 E))]
+           [M_5 (term (deBruijn-acc M_2 E))]
+           [M_6 (term (deBruijn-acc M_3 E))])
+      (term (if0 ,M_4 ,M_5 ,M_6)))]
+  [(deBruijn-acc (M_1 M_2 ...) E)
+   ,(let* ([M_3 (term (deBruijn-acc M_1 E))]
+           [M_4 (term ((deBruijn-acc M_2 E) ...))])
+      (cons M_3 M_4))]
+  [(deBruijn-acc (O M ...) E)
+   (O (deBruijn-acc M E) ...)])
+
+;; -----------------------------------------------------------------------------
+
+(module+ test
+  (test-equal (term (=α x y)) #f)
+  (test-equal (term (=α (λ (x) x) (λ (y) y))) #t))
