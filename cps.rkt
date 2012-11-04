@@ -5,7 +5,7 @@
 
 (require redex "cs.rkt")
 
-(provide CPS cps (all-from-out "cs.rkt"))
+(provide CPS cps)
 
 (define-extended-language CPS CS
   (P (k W)

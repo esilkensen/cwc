@@ -2,7 +2,7 @@
 
 ;; This file defines the CEK-machine for CPS.
 
-(require redex "cps.rkt")
+(require redex "cs.rkt" "cps.rkt")
 
 (provide eval-c CPS+EK cps-cek)
 
@@ -76,7 +76,7 @@
   (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
   (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
   (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
-
+  
   (test-equal (term (eval-c (cps ,p1))) 6)
   (test-equal (term (eval-c (cps ,p2))) 1)
   (test-equal (term (eval-c (cps ,p3))) 118))

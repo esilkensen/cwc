@@ -2,7 +2,7 @@
 
 ;; This file defines the CE-machine for CPS.
 
-(require redex "cps.rkt")
+(require redex "cs.rkt" "cps.rkt")
 
 (provide eval-n CPS+E cps-ce)
 
@@ -17,7 +17,7 @@
       (unless (= (length results) 1)
         (error 'eval-d "term ~s had multiple reductions: ~s" (term P) results))
       (match-reduction-result (car results)))])
-      
+
 ;; Data Specifications:
 (define-extended-language CPS+E CPS
   (S (P E))
@@ -77,7 +77,7 @@
   (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
   (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
   (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
-
+  
   (test-equal (term (eval-n (cps ,p1))) 6)
   (test-equal (term (eval-n (cps ,p2))) 1)
   (test-equal (term (eval-n (cps ,p3))) 118))
