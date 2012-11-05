@@ -79,7 +79,7 @@
   [(cs->anf M_1)
    (assert M_2)
    (where (M_2) ,(apply-reduction-relation* ->A (term M_1)))])
- 
+
 ;; Assert that a term is in A-normal form:
 (define-metafunction A
   [(assert M) M])
@@ -102,11 +102,11 @@
 
 (module+ test
   (require "cs-cek.rkt")
-  
+
   (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
   (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
   (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
-  
+
   (for ([p (list p1 p2 p3)])
     (define a1 (term (cs->cps->anf ,p)))
     (define a2 (term (cs->anf ,p)))

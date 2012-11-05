@@ -7,6 +7,7 @@
 
 (provide CPS cps)
 
+;; abstract syntax of Core Scheme in Continuation-Passing Style
 (define-extended-language CPS CS
   (P (k W)
      (let (x W) P)
@@ -75,7 +76,7 @@
                        (if (null? ms-it)
                            (append (term (,t ,k)) ts)
                            (let ([M_i (car ms-it)] [t_i (car ts-it)])
-                             (term (,M_i (λ (,t_i) 
+                             (term (,M_i (λ (,t_i)
                                            ,(loop (cdr ms-it)
                                                   (cdr ts-it)))))))))))))]
   [(F (O M_1 ...))
@@ -87,10 +88,11 @@
                  (if (null? ms-it)
                      (append (term (O ,k)) ts)
                      (let ([M_i (car ms-it)] [t_i (car ts-it)])
-                       (term (,M_i (λ (,t_i) 
+                       (term (,M_i (λ (,t_i)
                                      ,(loop (cdr ms-it)
                                             (cdr ts-it)))))))))))])
 
+;; CPS transform values
 (define-metafunction CPS
   Φ : V -> W
   [(Φ c) c]
@@ -99,3 +101,28 @@
    ,(let* ([M (term (F M))]
            [k (variable-not-in (term (x ... ,M)) 'k)])
       (term (λ (,k x ...) (,M ,k))))])
+
+;; -----------------------------------------------------------------------------
+
+(module+ test
+  ;; CPS examples from paper
+  (define e1 (term (+ (+ 2 2) (let (x 1) (f x)))))
+  (define e1-cps
+    (term (λ (k)
+            ((λ (k2) ((λ (k3) (k3 2))
+                      (λ (t1) ((λ (k4) (k4 2))
+                               (λ (t2) (+ k2 t1 t2))))))
+             (λ (t3) ((λ (k5)
+                        ((λ (k6) (k6 1))
+                         (λ (t4) (let (x t4)
+                                   ((λ (k7) ((λ (k8) (k8 f))
+                                             (λ (t5) ((λ (k9) (k9 x))
+                                                     (λ (t6) (t5 k7 t6))))))
+                                      k5)))))
+                        (λ (t7) (+ k t3 t7))))))))
+  (define e1-simp
+    (term (λ (k) (+ (λ (t1) (let (x 1) (f (λ (t2) (+ k t1 t2)) x))) 2 2))))
+
+  (test-equal (term (=α (F ,e1) ,e1-cps)) #t)
+  (test-equal (term (=α (simp (F ,e1)) ,e1-simp)) #t))
+
