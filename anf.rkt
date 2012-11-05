@@ -4,7 +4,7 @@
 ;; (A) and transformations from CS to Continuation-Passing Style (CPS) to A and
 ;; also from CS to A, directly.
 
-(require redex "cs.rkt" "cps.rkt")
+(require redex/reduction-semantics "cs.rkt" "cps.rkt")
 
 (provide A cs->cps->anf cs->anf)
 

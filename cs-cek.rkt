@@ -2,7 +2,7 @@
 
 ;; This file defines the CEK-machine for CS.
 
-(require redex "cs.rkt")
+(require redex/reduction-semantics "cs.rkt")
 
 (provide eval-d CS+EK cs-cek γ)
 

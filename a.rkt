@@ -3,7 +3,7 @@
 ;; This file defines the abstract syntax of Core Scheme (CS) in A-normal form
 ;; (A) and a transformation from Continuation-Passing Style (CPS) to A.
 
-(require redex "cps.rkt")
+(require redex/reduction-semantics "cps.rkt")
 
 (provide A anf (all-from-out "cps.rkt"))
 

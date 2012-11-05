@@ -3,7 +3,7 @@
 ;; This file defines the abstract syntax of Core Scheme (CS) and utility
 ;; metafunctions for operating on its terms.
 
-(require redex)
+(require redex/reduction-semantics)
 
 (provide CS δ extend lookup subst =α deBruijn)
 

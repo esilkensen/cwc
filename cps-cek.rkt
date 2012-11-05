@@ -2,7 +2,7 @@
 
 ;; This file defines the CEK-machine for CPS.
 
-(require redex "cs.rkt" "cps.rkt")
+(require redex/reduction-semantics "cs.rkt" "cps.rkt")
 
 (provide eval-c CPS+EK cps-cek)
 

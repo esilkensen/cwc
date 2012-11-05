@@ -2,7 +2,7 @@
 
 ;; This file defines the CE-machine for CPS.
 
-(require redex "cs.rkt" "cps.rkt")
+(require redex/reduction-semantics "cs.rkt" "cps.rkt")
 
 (provide eval-n CPS+E cps-ce)
 
