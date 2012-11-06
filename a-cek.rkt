@@ -2,7 +2,7 @@
 
 ;; This file defines the CEK-machine for A.
 
-(require redex/reduction-semantics "cs.rkt" "cs-cek.rkt" "anf.rkt")
+(require redex/reduction-semantics "cs.rkt" "cs-cek.rkt" "a.rkt")
 
 (provide eval-a A+EK ->a-cek)
 
