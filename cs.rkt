@@ -5,7 +5,7 @@
 
 (require redex/reduction-semantics)
 
-(provide CS δ extend lookup subst =α deBruijn)
+(provide CS δ extend lookup subst =α)
 
 ;; Abstract Syntax of Core Scheme
 (define-language CS
@@ -36,7 +36,8 @@
 ;; Looking up bindings in environments:
 (define-metafunction CS
   lookup : ((x any) ...) x -> any
-  [(lookup ((x_1 any_1) ... (x any) (x_2 any_2) ...) x) any
+  [(lookup ((x_1 any_1) ... (x any) (x_2 any_2) ...) x)
+   any
    (side-condition (not (member (term x) (term (x_2 ...)))))]
   [(lookup ((x_1 any_1) ...) x_2) #f])
 
@@ -101,7 +102,7 @@
       (reset-ind)
       (term (deBruijn-acc M ())))])
 
-;; deBruijn indice algorithm using a E accumulator mapping variables to numbers 
+;; deBruijn indice algorithm using a E accumulator mapping variables to numbers
 (define-metafunction CS-D
   deBruijn-acc : M E -> N
   [(deBruijn-acc c E) c]
@@ -129,14 +130,13 @@
 
 ;; -----------------------------------------------------------------------------
 
-(module+ test
-
+(module+ test  
   (test-equal (term (lookup ((a 0)) a)) (term 0))
   (test-equal (term (lookup ((a 0)) b)) (term #f))
-
+  
   (test-equal
-    (term (extend ((a 0)) (x y z) (1 2 3)))
-    (term ((a 0) (x 1) (y 2) (z 3))))
-
+   (term (extend ((a 0)) (x y z) (1 2 3)))
+   (term ((a 0) (x 1) (y 2) (z 3))))
+  
   (test-equal (term (=α x y)) #f)
   (test-equal (term (=α (λ (x) x) (λ (y) y))) #t))

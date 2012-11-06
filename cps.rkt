@@ -117,12 +117,11 @@
                          (λ (t4) (let (x t4)
                                    ((λ (k7) ((λ (k8) (k8 f))
                                              (λ (t5) ((λ (k9) (k9 x))
-                                                     (λ (t6) (t5 k7 t6))))))
-                                      k5)))))
-                        (λ (t7) (+ k t3 t7))))))))
+                                                      (λ (t6) (t5 k7 t6))))))
+                                    k5)))))
+                      (λ (t7) (+ k t3 t7))))))))
   (define e1-simp
     (term (λ (k) (+ (λ (t1) (let (x 1) (f (λ (t2) (+ k t1 t2)) x))) 2 2))))
-
+  
   (test-equal (term (=α (F ,e1) ,e1-cps)) #t)
   (test-equal (term (=α (simp (F ,e1)) ,e1-simp)) #t))
-
