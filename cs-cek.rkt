@@ -4,19 +4,17 @@
 
 (require redex/reduction-semantics "cs.rkt")
 
-(provide eval-d CS+EK cs-cek γ)
+(provide eval-d CS+EK ->cs-cek γ)
 
 ;; Semantics:
 (define-metafunction CS
   eval-d : M -> c
   [(eval-d M)
-   ,(let ([S (term (M () stop))])
-      (define results (apply-reduction-relation* cs-cek S))
-      (define match-reduction-result
-        (term-match/single CS+EK [(stop c) (term c)]))
-      (unless (= (length results) 1)
-        (error 'eval-d "term ~s had multiple reductions: ~s" (term M) results))
-      (match-reduction-result (car results)))])
+   (result ,(apply-reduction-relation* ->cs-cek (term (M () stop))))])
+
+(define-metafunction CS
+  result : [(stop c)] -> c
+  [(result ((stop c))) c])
 
 ;; Data Specifications:
 (define-extended-language CS+EK CS
@@ -30,13 +28,12 @@
      (pr O (V* ...) (M ...) E K)))
 
 ;; Transition Rules:
-(define cs-cek
+(define ->cs-cek
   (reduction-relation
    CS+EK
    #:domain S
    [--> (V E K)
-        (K V*)
-        (where V* (γ V E))
+        (K (γ V E))
         "cek1"]
    [--> ((let (x M_1) M_2) E K)
         (M_1 E (lt x M_2 E K))
@@ -85,7 +82,7 @@
   (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
   (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
   (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
-
+  
   (test-equal (term (eval-d ,p1)) 6)
   (test-equal (term (eval-d ,p2)) 1)
   (test-equal (term (eval-d ,p3)) 118))
