@@ -1,2 +1,7 @@
 *~
 compiled/
+*.pdf
+*.aux
+*.log
+*.blg
+*.bbl
