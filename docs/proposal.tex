@@ -1,65 +1,123 @@
-\documentclass[12pt]{article}
-\usepackage{url,afterpage,enumerate,amssymb,amsmath,graphicx,subfigure,tabularx,array,natbib,caption}
-\usepackage[letterpaper,margin=1.5cm]{geometry}
-\setlength{\parskip}{1ex} %--skip lines between paragraphs
-\setlength{\parindent}{0pt} %--don't indent paragraphs
+\documentclass[11pt]{article}
 
+\usepackage{fancyhdr}
+\usepackage{geometry}
+\usepackage{stmaryrd}
+\usepackage[numbers]{natbib}
 
-%-- Commands for header
-\renewcommand{\title}[1]{\textbf{#1}\\}
-\renewcommand{\line}{\begin{tabularx}{\textwidth}{X>{\raggedleft}X}\hline\\\end{tabularx}\\[-0.5cm]}
-\newcommand{\leftright}[2]{\begin{tabularx}{\textwidth}{X>{\raggedleft}X}#1
-\newcommand{\norm}[1]{\lVert#1\rVert}
-& #2\\\end{tabularx}\\[-0.5cm]}
+\renewcommand{\bibsection}{\begin{center}\textbf{\refname}\end{center}}
 
-%-- definitions
-\newtheorem{my_def}{Definition}[section]
+\lhead{CS 7400 -- Principles of Programming Languages \\
+  Project Proposal, due October 23, 2012}
+\rhead{Phillip Mates, Erik Silkensen \\
+  \texttt{\{mates,ejs\}@ccs.neu.edu}}
+\cfoot{}
 
 \begin{document}
 
-\title{Project Proposal: The Essence of Compiling with Continuations}
-\line
-\leftright{\today}{CS 7400} %-- left and right positions in the header
-\leftright{Phillip Mates and Erik Silkensen}{} \\ %-- left and right positions in the header
+\thispagestyle{fancy}
 
-% A first reading of a technically complex paper should leave you with a
-% shallow understanding and a desire to understand certain aspects in more
-% depth. The best way to express this desire is to articulate your
-% understanding and to phrase questions in this context. These questions tend
-% to tell you which "tools" (mathematical techniques, implementation,
-% measurements, etc) you will need to use to find answers.
+% (1) Summarize your current understanding of the paper.
+Compilers for higher-order languages often transform programs into
+continuation-passing style (CPS) form as an intermediate representation. In the
+language of CPS terms, all procedures take a continuation argument $k$
+that represents the ``rest of the computation;'' procedures apply $k$ to their
+return value instead of returning directly. This form is beneficial to
+compilers because it enables optimizations by way of simple $\beta$- and
+$\eta$-reductions, and it simplifies code generation by resembling a low-level
+target language. However, it comes at a cost: a na\"{\i}ve CPS transformation
+greatly expands a program's size, which a realistic compiler must work to
+reduce.
+% (and effectively invert).
 
-% understanding of the paper
-Continuation Passing Style (CPS) is a popular intermediate representation form in compilers that often requires several optimizations to overcome its complexities. The 1993 paper ``The Essence of Compiling with Continuations'' by Flanagan et.\ al.\ shows the equivalence between CPS and A-Normal Form (ANF) intermediate representations.
-The authors achieve this by creating a translation between a CPS abstract machine and an ANF abstract machine.
-This result demonstrates that the more efficient 1-pass ANF translation can be used to achieve the same result as a 3-pass CPS translation.
+\citet{Sabry:1992zr} observed that the transformation typically involves
+three phases: compilers translate into CPS, simplify the result, and then
+% effectively
+invert the translation during code generation. They showed how
+a set of so-called $A$-reductions applied directly to a source program yields a
+result equivalent to the combined effect of the CPS transformation.
+\citet{Flanagan:1993fk} clarified this correspondence by developing
+a sequence of abstract machines simulating the compilation of a
+Scheme-like language using both CPS and $A$-reduction strategies.
+% Scheme-like language
+% ($\mathit{CS}$).
+% , with and without continuations.
+%In particular, they consider CEK machines for $\mathit{CS}$,
+%$\mathit{CPS}(\mathit{CS})$, and $A(\mathit{CS})$ (the languages of
+%$\mathit{CS}$ terms in CPS and $A$-normal form).
+They discuss the details of the machines and the translations between the
+languages, and prove the equivalence of CEK machines specialized for CPS and
+$A$-normal form terms. 
+%$\mathit{CPS}(\mathit{CS})$ and $A(\mathit{CS})$.
+They conclude that compilers
+using $A$-normal forms may enjoy the benefits of CPS-based compilers without
+the overhead.
 
-Flanagan et.\ al.\ begin with a Core Scheme (CS), which they naively convert to CPS using the $\mathcal{F}$ function [Fischer]. Administrative $\overline{\lambda}$ terms introduced by $\mathcal{F}$ are then removed using a $\overline{\beta}$-normalization function [Sabry]. At this point a $C_{cps}E$ abstract machine is built to operate over $\overline{\beta}(\mathcal{F}(\textit{CS}))$. The authors proceed to define the $C_{cps}EK$ machine, which removes some redundancy to do with \ldots.
+% (2) State which aspects of the paper you would like to understand in depth.
+% (3) Explain which tools (Redex and otherwise) you wish to use to model the
+% paper's insights so that you gain the desired insight.
 
-% transformations
-CS $\to$ CPS via $\mathcal{F}$ (naive CPS transformation) 
+While we understand their reasoning at a high level, we would like to grasp
+the subtleties of the abstract machines and language transformations.
+Towards that end, we plan to implement each machine and transformation
+in Redex. By running executable models of the paper's mathematics on concrete
+examples, we will gain a better understanding of how programs change throughout
+the transformations, how modifications to the machines remove redundancies, and
+the reasons for why it may be advantageous for a compiler to use $A$-reductions
+instead of CPS.
 
-CPS $\to$ CPS(CS) via $\overline{\beta}$-normalization uses $C_{cps}E$
+As a side effect, we also think this project will help us discover to how a
+tool such as Redex is useful to programming language researchers in the
+real world. For example, as we began implementing a model of the paper,
+we noticed what seem to be two typos in the na\"{i}ve and inverse CPS
+transformations. We were also puzzled by the definition of evaluation contexts
+for the $A$-reductions and plan to check our understanding by implementing a
+working model in Redex.
+%Along with a deeper comprehension of the paper, this project will serve as a re%al-world motivator towards the use of lightweight mechanization tools such as Redex.
+%This project should also introduce us to some of the real-world motivation
+%behind the Redex tool as a form of lightweight
+%mechanization~\cite{Klein:2012uq}.
+%We started implementing the models from the
+%paper by typing them directly into Redex, which revealed potential
+%typos in the paper's na\"{i}ve and inverse CPS transformations.
+%With complete Redex models, these typos and other suspicions, such as the incom%pleteness of the $A$-reductions' evaluation context definition, can be validated.
+%
+% Paragraph about A-reductions vs beta-reductions
+% While introducing A-reductions on the source language, \citet{Flanagan:1993fk}
+% mention that the corresponding reduction on CPS terms is the
+% $\overline{\beta}$-reduction, which removes administrative $\lambda$'s from the
+% na\"{i}ve CPS translation.  In order to better understand the relation between
+% A and $\overline{\beta}$ reductions, we propose to model both reductions in
+% Redex.  Doing so is especially interesting since as they appear in Figure 7
+% \cite{Flanagan:1993fk}, the A-reduction and evaluation context are either
+% non-intuitive or in fact contain errors.
 
-$C_{cps}EK$ removes some redundancy
+% % Paragraph about errors in other figures
+% % Errors in Figure 3 and Figure 6.
+% To this end, we have identified two other small potential errors in the figures
+% of \cite{Flanagan:1993fk}.  The last rule of $\Phi$ in the CPS transformation
+% figure, $\Phi \llbracket \lambda x_1 \ldots x_n . M \rrbracket = \lambda k x_1
+% \ldots x_n . \mathcal{F} \llbracket M \rrbracket$, doesn't seem to use the
+% newly introduced $k$ argument in the body of the $\lambda$.  In the second
+% potential error, the last rule of $\Psi$ in the inverse CPS transformation
+% figure, $\Psi \llbracket \lambda k x_1 \ldots x_n . P \rrbracket = \lambda x_1
+% \ldots x_n . \mathcal{U} \llbracket M \rrbracket$, introduces an unspecified
+% $M$ on the right hand side. As a means to resolve these suspicions and build
+% our confidence in the correctness of the other figures presented, we propose to
+% model the abstract machines (figures 2,4,5, and 8) and CPS transformations
+% (figures 3 and 6) from \cite{Flanagan:1993fk} in Redex.
 
-CPS(CS) $\to$ A(CS) via $\mathcal{U}$ (un-CPS) uses $C_{a}EK$
+% % Paragraph about "Running Your Research"
+% % TODO: finish this paragraph:
+% In addition to finding errors, building executable models of the paper's
+% mathematics will enable us to run the mathematics on concrete examples. \ldots
+% solidify our understanding of how code shrinks and grows through
+% transformations, as well as, what redundancies introduced and removed via
+% language transformations and abstract machine formulations.
 
-% questions
-In order to formalize their argument, Flanagan et.\ al.\ utilize techniques widely accepted in the Programming Languages community, such as defining semantics in terms of abstract machines and using evaluation contexts for transformation reductions.
-On the surface these techniques seem intuitive, but further inspection led us to realize our inability to reason about the models in this paper by hand.
-ANF program transformation \ldots
+% \pagebreak
 
-% Tools/Proposal
-Tools/Proposal
-
-% Write up a one-page memo in journal-paper style that
-% \begin{itemize}
-%   \item summarizes your current understanding of the paper
-%   \item states which aspects of the paper you would like to understand in depth
-%   \item explains which tools (Redex and otherwise) you wish to use to model the
-%     paper's insights so that you gain the desired insight. Researchers tend to
-%     think of this memo as a proposal.
-% \end{itemize}
+\bibliographystyle{abbrvnat}
+\bibliography{refs}
 
 \end{document}

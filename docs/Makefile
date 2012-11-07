@@ -1,8 +1,10 @@
-proposal2.pdf: proposal2.tex refs.bib
-	pdflatex proposal2
-	bibtex proposal2
-	pdflatex proposal2
-	pdflatex proposal2
+all: proposal.pdf
+
+proposal.pdf: proposal.tex refs.bib
+	pdflatex proposal
+	bibtex proposal
+	pdflatex proposal
+	pdflatex proposal
 
 clean:
-	rm -rf proposal2.pdf *.aux *.log
+	rm -rf proposal.pdf *.aux *.log
