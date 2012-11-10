@@ -1,28 +1,24 @@
-\documentclass{article}
+\documentclass[11pt]{article}
 
 \usepackage{alltt}
 \usepackage{fancyhdr}
-\usepackage{geometry}
-\usepackage{stmaryrd}
+\usepackage[margin=1.5in]{geometry}
 \usepackage[numbers]{natbib}
 
-\renewcommand{\bibsection}{\begin{center}\textbf{\refname}\end{center}}
+\renewcommand{\bibsection}{\begin{flushleft}\textbf{\refname}\end{flushleft}}
 
 \newcommand{\includeracket}[1]{
 \pagebreak
 \lhead{Appendix: Redex Model}
 \rhead{\emph{File: #1.rkt}}
 \pagestyle{fancy}
-%\begin{small}
+\begin{footnotesize}
 \input{appendix/#1}
-%\end{small}
+\end{footnotesize}
 }
 
-\lhead{CS 7400 -- Principles of Programming Languages \\
-  Revised Project Memo, due November 19, 2012}
-\rhead{Phillip Mates, Erik Silkensen \\
-  \texttt{\{mates,ejs\}@ccs.neu.edu}}
-\cfoot{}
+\lhead{The Essence of Compiling with Continuations}
+\rhead{Phillip Mates and Erik Silkensen}
 
 \begin{document}
 
@@ -81,12 +77,12 @@ working model in Redex.
 \bibliographystyle{abbrvnat}
 \bibliography{refs}
 
-\includeracket{cs}
-\includeracket{cs-cek}
-\includeracket{cps}
-\includeracket{cps-ce}
-\includeracket{cps-cek}
-\includeracket{a}
-\includeracket{a-cek}
+% \includeracket{cs}
+% \includeracket{cs-cek}
+% \includeracket{cps}
+% \includeracket{cps-ce}
+% \includeracket{cps-cek}
+% \includeracket{a}
+% \includeracket{a-cek}
 
 \end{document}
