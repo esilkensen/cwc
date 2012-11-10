@@ -1,7 +1,7 @@
 all: proposal.pdf
 
 proposal.pdf: proposal.tex refs.bib
-	racket make-latex.rkt ../*.rkt
+	racket make-appendix.rkt ../*.rkt
 	pdflatex proposal
 	bibtex proposal
 	pdflatex proposal
