@@ -23,6 +23,11 @@
 \begin{document}
 
 \thispagestyle{fancy}
+% New Proposal format:
+%   (1) the fixed-up summary from the "proposal" memo
+%   (2) a revised and concrete set of questions that you tackled
+%   (3) a description of the approach used to answer them
+%   (4) your answers (abstractly, because you have a limited amount of space)
 
 % (1) Summarize your current understanding of the paper.
 Compilers for higher-order languages often transform programs into
@@ -38,18 +43,19 @@ However, it comes at a cost: a na\"{\i}ve CPS transformation greatly expands a
 program's size, which a realistic compiler must work to reduce.
 
 \citet{Sabry:1992zr} observed that the transformation typically involves three
-phases: compilers translate into CPS, simplify the result, and then invert the
-translation during code generation. They showed how a set of so-called
-$A$-reductions applied directly to a source program yields a result equivalent
-to the combined effect of the CPS transformation.
-% TODO: make 'both' below less ambiguous
-\citet{Flanagan:1993fk} clarified this correspondence by developing a sequence
-of abstract machines simulating the compilation of a Scheme-like language using
-both CPS and $A$-reduction strategies.  They discuss the details of the
-machines and the translations between the languages, and prove the equivalence
-of CEK machines specialized for CPS and $A$-normal form terms.  They conclude
-that compilers using $A$-normal forms may enjoy the benefits of CPS-based
-compilers without the overhead.
+phases: compilers translate into CPS, simplify the result, and then undo the
+CPS translation via a \textit{un}-CPS reduction.
+%They showed how a set of so-called $A$-reductions applied directly to a source
+%program yields a result equivalent to the combined effect of the CPS
+%transformation. \citet{Flanagan:1993fk} clarified this correspondence by
+%developing a sequence of abstract machines simulating the compilation of a
+%Scheme-like language using both CPS and $A$-reduction strategies.
+\citet{Flanagan:1993fk} forgo the need of CPS and \textit{un}-CPS translations
+by developing an equivalent source level $A$-reduction. They construct abstract
+machines simulating the compilation of a Scheme-like language via both CPS and
+$A$-reduction strategies, and then prove their equivalence. With this, they
+conclude that compilers using $A$-normal forms may enjoy the benefits of
+CPS-based compilers without the overhead.
 
 % (2) State which aspects of the paper you would like to understand in depth.
 % (3) Explain which tools (Redex and otherwise) you wish to use to model the
