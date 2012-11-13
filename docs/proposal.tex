@@ -29,7 +29,6 @@
 %   (3) a description of the approach used to answer them
 %   (4) your answers (abstractly, because you have a limited amount of space)
 
-% (1) Summarize your current understanding of the paper.
 Compilers for higher-order languages often transform programs into
 continuation-passing style (CPS) form as an intermediate representation. In the
 language of CPS terms, all procedures take a continuation argument $k$
@@ -57,10 +56,6 @@ $A$-reduction strategies, and then prove their equivalence. With this, they
 conclude that compilers using $A$-normal forms may enjoy the benefits of
 CPS-based compilers without the overhead.
 
-% (2) State which aspects of the paper you would like to understand in depth.
-% (3) Explain which tools (Redex and otherwise) you wish to use to model the
-% paper's insights so that you gain the desired insight.
-
 % TODO: expand on subtleties of models
 While we understand their reasoning at a high level, we would like to grasp
 the subtleties of the abstract machines and language transformations.
@@ -79,6 +74,16 @@ we noticed what seem to be two typos in the na\"{i}ve and inverse CPS
 transformations. We were also puzzled by the definition of evaluation contexts
 for the $A$-reductions and plan to check our understanding by implementing a
 working model in Redex.
+
+% Questions asked:
+%  - how programs change throughout the transformations?
+%  - how redundancies are removed from the machines?
+%  - CPS vs A in a compiler (timing)?
+%  - how to implement A-reductions algorithm?
+%  - are there typos in the figures?
+
+% Approach to answering questions
+% Answers to questions
 
 \bibliographystyle{abbrvnat}
 \bibliography{refs}
