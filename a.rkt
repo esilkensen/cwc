@@ -99,6 +99,9 @@
 (define-metafunction CS+E
   not-let-hole : E -> #t or #f
   [(not-let-hole (let (x hole) M)) #f]
+  [(not-let-hole (if0 E M_l M_r)) (not-let-hole E)]
+  [(not-let-hole (let (x_1 E) M_0)) (not-let-hole E)]
+  [(not-let-hole (F V ... E M_rest ...)) (not-let-hole E)]
   [(not-let-hole E) #t])
 
 ;; -----------------------------------------------------------------------------
@@ -109,6 +112,7 @@
   (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
   (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
   (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
+  (define p4 (term (+ 1 (let (x (+ 1 1)) (- x x)))))
   
   (for ([p (list p1 p2 p3)])
     (define a1 (term (cs->cps->anf ,p)))
