@@ -21,7 +21,23 @@
 ;; Transforming a CS term to β-normal form:
 (define-metafunction CPS
   cps : M -> W
-  [(cps M) (simp (F M))])
+  [(cps M) (let-simp (simp (F M)))])
+
+(define-metafunction CPS
+  [(let-simp c) c]
+  [(let-simp x) x]
+  [(let-simp (λ (x ...) M))
+   (λ (x ...) (let-simp M))]
+  [(let-simp (let (x_1 x_2) M))
+   (subst M x_1 x_2)]
+  [(let-simp (let (x M_1) M_2))
+   (let (x (let-simp M_1)) (let-simp M_2))]
+  [(let-simp (if0 M_1 M_2 M_3))
+   (if0 (let-simp M_1) (let-simp M_2) (let-simp M_3))]
+  [(let-simp (M_1 M_2 ...))
+   ((let-simp M_1) (let-simp M_2) ...)]
+  [(let-simp (O M ...))
+   (O (let-simp M) ...)])
 
 ;; The simplification phase (β):
 (define-metafunction CPS

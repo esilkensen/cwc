@@ -105,13 +105,13 @@
 
 (module+ test
   (require "cs-cek.rkt")
-
+  
   (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
   (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
   (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
   (define p4 (term (+ 1 (let (x (+ 1 1)) (- x x)))))
-
-  (for ([p (list p1 p2 p3)])
+  
+  (for ([p (list p1 p2 p3 p4)])
     (define a1 (term (cs->cps->anf ,p)))
     (define a2 (term (cs->anf ,p)))
     (test-equal (term (eval-d ,p)) (term (eval-d ,a1)))
