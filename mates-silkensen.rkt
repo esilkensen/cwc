@@ -149,6 +149,21 @@
 (require 'cs)
 (module+ test
   (displayln "Testing module cs...")
+  (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
+  (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
+  (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
+  (define p4 (term (+ 1 (let (x (+ 1 1)) (- x x)))))
+  
+  (define r1 6)
+  (define r2 1)
+  (define r3 118)
+  (define r4 1)
+  
+  (define P (list p1 p2 p3 p4))
+  (define R (list r1 r2 r3 r4))
+  (for ([p P])
+    (test-equal (redex-match? CS M p) #t))
+  
   (test-equal (term (lookup ((a 0)) a)) (term 0))
   (test-equal (term (lookup ((a 0)) b)) (term #f))
   
@@ -243,15 +258,8 @@
 (require 'cs-cek)
 (module+ test
   (displayln "Testing module cs-cek...")
-  (define p1 (term (+ (+ 2 2) (let (x 1) (+ x x)))))
-  (define p2 (term (if0 (let (x 1) (- x x)) 1 2)))
-  (define p3 (term (let (f (λ (x y) (* x y y))) (+ (f 2 3) (f 4 5)))))
-  (define p4 (term (+ 1 (let (x (+ 1 1)) (- x x)))))
-  
-  (test-equal (term (eval-d ,p1)) 6)
-  (test-equal (term (eval-d ,p2)) 1)
-  (test-equal (term (eval-d ,p3)) 118)
-  (test-equal (term (eval-d ,p4)) 1))
+  (for ([p P] [r R])
+    (test-equal (term (eval-d ,p)) r)))
 
 ;; ============================================================================
 
@@ -382,7 +390,6 @@
   (define e1 (term (+ (+ 2 2) (let (x 1) (f x)))))
   (define e1-simp
     (term (λ (k) (+ (λ (t1) (let (x 1) (f (λ (t2) (+ k t1 t2)) x))) 2 2))))
-  
   (test-equal (term (=α (cps ,e1) ,e1-simp)) #t))
 
 ;; ============================================================================
@@ -456,10 +463,8 @@
 (require 'cps-ce)
 (module+ test
   (displayln "Testing module cps-ce...")
-  (test-equal (term (eval-n (cps ,p1))) 6)
-  (test-equal (term (eval-n (cps ,p2))) 1)
-  (test-equal (term (eval-n (cps ,p3))) 118)
-  (test-equal (term (eval-n (cps ,p4))) 1))
+  (for ([p P] [r R])
+    (test-equal (term (eval-n (cps ,p))) r)))
 
 ;; ============================================================================
 
@@ -531,10 +536,8 @@
 (require 'cps-cek)
 (module+ test
   (displayln "Testing module cps-cek...")
-  (test-equal (term (eval-c (cps ,p1))) 6)
-  (test-equal (term (eval-c (cps ,p2))) 1)
-  (test-equal (term (eval-c (cps ,p3))) 118)
-  (test-equal (term (eval-c (cps ,p4))) 1))
+  (for ([p P] [r R])
+    (test-equal (term (eval-c (cps ,p))) r)))
 
 ;; ============================================================================
 
@@ -645,7 +648,7 @@
 (require 'a)
 (module+ test
   (displayln "Testing module a...")
-  (for ([p (list p1 p2 p3 p4)])
+  (for ([p P])
     (define a1 (term (cs->cps->anf ,p)))
     (define a2 (term (cs->anf ,p)))
     (test-equal (term (eval-d ,p)) (term (eval-d ,a1)))
@@ -718,10 +721,8 @@
 (require 'a-cek)
 (module+ test
   (displayln "Testing module a-cek...")
-  (test-equal (term (eval-a (cs->anf ,p1))) 6)
-  (test-equal (term (eval-a (cs->anf ,p2))) 1)
-  (test-equal (term (eval-a (cs->anf ,p3))) 118)
-  (test-equal (term (eval-a (cs->anf ,p4))) 1))
+  (for ([p P] [r R])
+    (test-equal (term (eval-a (cs->anf ,p))) r)))
 
 ;; ============================================================================
 
