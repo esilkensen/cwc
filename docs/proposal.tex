@@ -37,43 +37,71 @@ return value instead of returning directly. This form is beneficial to
 compilers because it enables optimizations by way of simple $\beta$- and
 $\eta$-reductions, and it simplifies code generation by resembling a low-level
 target language.
-% TODO: rewrite following sentence with more examples(?)
-However, it comes at a cost: a na\"{\i}ve CPS transformation greatly expands a
-program's size, which a realistic compiler must work to reduce.
 
-\citet{Sabry:1992zr} observed that the transformation typically involves three
-phases: compilers translate into CPS, simplify the result, and then undo the
-CPS translation via a \textit{un}-CPS reduction.
+% TODO: rewrite following sentence with more examples(?)
+%However, it comes at a cost: a na\"{\i}ve CPS transformation greatly expands a
+%program's size, which a realistic compiler must work to reduce.
+
+While implementing a na\"{\i}ve CPS transformation is a straightforward task,
+for realistic compilers the process typically involves at least two additional
+phases. First, the CPS transformation introduces a large number of
+``administrative'' terms which greatly increase a program's size.
+A simplification phase reduces the resulting programs to a smaller, normal
+form. Second, compilers treat the continuation closures specially, e.g., to
+improve analyses or provide better allocation strategies.
+
+\citet{Flanagan:1993fk} argue that by using a simpler organization based on
+the $A$-reductions of \citet{Sabry:1992zr}, compilers could achieve the 
+benefits of a fully developed CPS compiler with a single source-level
+transformation. In support of their argument they present a sequence of
+abstract machines simulating the compilation of a Scheme-like language.
+They begin by deriving the CEK machine from the CE machine specialized for
+(simplified) CPS, showing how to use the continuation register to model the
+optimizations of realistic CPS compilers. Next they introduce the
+$A$-reductions and the corresponding CEK machine, which they prove is
+equivalent to the CEK machine for CPS. In fact, the machines are identical
+up to the syntax of their control strings, and applying an inverse CPS
+transformation to a simplified CPS term gives the $A$-normal form of the
+original source-language term. They conclude that compiling with $A$-normal
+forms realizes the essence of compiling with continuations, without requiring
+a multi-stage CPS transformation.
+
+%process 
+%\citeauthor{Flanagan:1993fk}
+
+%%\citet{Sabry:1992zr} observed that the transformation typically involves three
+%%phases: compilers translate into CPS, simplify the result, and then undo the
+%%CPS translation via a \textit{un}-CPS reduction.
 %They showed how a set of so-called $A$-reductions applied directly to a source
 %program yields a result equivalent to the combined effect of the CPS
 %transformation. \citet{Flanagan:1993fk} clarified this correspondence by
 %developing a sequence of abstract machines simulating the compilation of a
 %Scheme-like language using both CPS and $A$-reduction strategies.
-\citet{Flanagan:1993fk} forgo the need of CPS and \textit{un}-CPS translations
-by developing an equivalent source level $A$-reduction. They construct abstract
-machines simulating the compilation of a Scheme-like language via both CPS and
-$A$-reduction strategies, and then prove their equivalence. With this, they
-conclude that compilers using $A$-normal forms may enjoy the benefits of
-CPS-based compilers without the overhead.
+%%\citet{Flanagan:1993fk} forgo the need of CPS and \textit{un}-CPS translations
+%%by developing an equivalent source level $A$-reduction. They construct abstra%%ct
+%%machines simulating the compilation of a Scheme-like language via both CPS and
+%%$A$-reduction strategies, and then prove their equivalence. With this, they
+%%conclude that compilers using $A$-normal forms may enjoy the benefits of
+%%CPS-based compilers without the overhead.
 
 % TODO: expand on subtleties of models
-While we understand their reasoning at a high level, we would like to grasp
-the subtleties of the abstract machines and language transformations.
-Towards that end, we plan to implement each machine and transformation
-in Redex. By running executable models of the paper's mathematics on concrete
-examples, we will gain a better understanding of how programs change throughout
-the transformations, how modifications to the machines remove redundancies, and
-the reasons for why it may be advantageous for a compiler to use $A$-reductions
-instead of CPS.
+% While we understand their reasoning at a high level, we would like to grasp
+% the subtleties of the abstract machines and language transformations.
+% Towards that end, we plan to implement each machine and transformation
+% in Redex. By running executable models of the paper's mathematics on concrete
+% examples, we will gain a better understanding of how programs change throughout
+% the transformations, how modifications to the machines remove redundancies, and
+% the reasons for why it may be advantageous for a compiler to use $A$-reductions
+% instead of CPS.
 
 % TODO: talk about bugs and A-reduction redex model
-As a side effect, we also think this project will help us discover to how a
-tool such as Redex is useful to programming language researchers in the
-real world. For example, as we began implementing a model of the paper,
-we noticed what seem to be two typos in the na\"{i}ve and inverse CPS
-transformations. We were also puzzled by the definition of evaluation contexts
-for the $A$-reductions and plan to check our understanding by implementing a
-working model in Redex.
+% As a side effect, we also think this project will help us discover to how a
+% tool such as Redex is useful to programming language researchers in the
+% real world. For example, as we began implementing a model of the paper,
+% we noticed what seem to be two typos in the na\"{i}ve and inverse CPS
+% transformations. We were also puzzled by the definition of evaluation contexts
+% for the $A$-reductions and plan to check our understanding by implementing a
+% working model in Redex.
 
 % Questions asked:
 %  - how programs change throughout the transformations?
