@@ -1,21 +1,10 @@
 \documentclass[11pt]{article}
 
-\usepackage{alltt}
 \usepackage{fancyhdr}
 \usepackage[margin=1.5in]{geometry}
 \usepackage[numbers]{natbib}
 
 \renewcommand{\bibsection}{\begin{flushleft}\textbf{\refname}\end{flushleft}}
-
-\newcommand{\includeracket}[1]{
-\pagebreak
-\lhead{Appendix: Redex Model}
-\rhead{\emph{File: #1.rkt}}
-\pagestyle{fancy}
-\begin{footnotesize}
-\input{appendix/#1}
-\end{footnotesize}
-}
 
 \lhead{The Essence of Compiling with Continuations}
 \rhead{Phillip Mates and Erik Silkensen}
@@ -23,11 +12,6 @@
 \begin{document}
 
 \thispagestyle{fancy}
-% New Proposal format:
-%   (1) the fixed-up summary from the "proposal" memo
-%   (2) a revised and concrete set of questions that you tackled
-%   (3) a description of the approach used to answer them
-%   (4) your answers (abstractly, because you have a limited amount of space)
 
 Compilers for higher-order languages often transform programs into
 continuation-passing style (CPS) form as an intermediate representation. In the
@@ -37,10 +21,6 @@ return value instead of returning directly. This form is beneficial to
 compilers because it enables optimizations by way of simple $\beta$- and
 $\eta$-reductions, and it simplifies code generation by resembling a low-level
 target language.
-
-% TODO: rewrite following sentence with more examples(?)
-%However, it comes at a cost: a na\"{\i}ve CPS transformation greatly expands a
-%program's size, which a realistic compiler must work to reduce.
 
 While implementing a na\"{\i}ve CPS transformation is a straightforward task,
 for realistic compilers the process typically involves at least two additional
@@ -66,30 +46,6 @@ original source-language term. They conclude that compiling with $A$-normal
 forms realizes the essence of compiling with continuations, without requiring
 a multi-stage CPS transformation.
 
-%process 
-%\citeauthor{Flanagan:1993fk}
-
-%%\citet{Sabry:1992zr} observed that the transformation typically involves three
-%%phases: compilers translate into CPS, simplify the result, and then undo the
-%%CPS translation via a \textit{un}-CPS reduction.
-%They showed how a set of so-called $A$-reductions applied directly to a source
-%program yields a result equivalent to the combined effect of the CPS
-%transformation. \citet{Flanagan:1993fk} clarified this correspondence by
-%developing a sequence of abstract machines simulating the compilation of a
-%Scheme-like language using both CPS and $A$-reduction strategies.
-%%\citet{Flanagan:1993fk} forgo the need of CPS and \textit{un}-CPS translations
-%%by developing an equivalent source level $A$-reduction. They construct abstra%%ct
-%%machines simulating the compilation of a Scheme-like language via both CPS and
-%%$A$-reduction strategies, and then prove their equivalence. With this, they
-%%conclude that compilers using $A$-normal forms may enjoy the benefits of
-%%CPS-based compilers without the overhead.
-
-% New Proposal format:
-%   (1) the fixed-up summary from the "proposal" memo
-%   (2) a revised and concrete set of questions that you tackled
-%   (3) a description of the approach used to answer them
-%   (4) your answers (abstractly, because you have a limited amount of space)
-
 While we understood \citeauthor{Flanagan:1993fk}'s reasoning at a high level
 after an initial reading, we planned to try and grasp the subtleties of the
 abstract machines and language transformations by implementing them in Redex.
@@ -97,19 +53,14 @@ Specifically, we were interested in better understanding how programs change
 throughout the transformations and how redundancies are removed from the
 CEK machine for CPS. We also wanted to implement the $A$-normalization
 algorithm as a reduction relation using the evaluation contexts defined in the
-paper, which had initially appeared puzzling or incomplete.
+paper, whose presentation appeared puzzling to us at first.
 
-% TODO: expand on subtleties of models
-% While we understand their reasoning at a high level, we would like to grasp
-% the subtleties of the abstract machines and language transformations.
-% Towards that end, we plan to implement each machine and transformation
-% in Redex. By running executable models of the paper's mathematics on concrete
-% examples, we will gain a better understanding of how programs change throughout
-% the transformations, how modifications to the machines remove redundancies, and
-% the reasons for why it may be advantageous for a compiler to use $A$-reductions
-% instead of CPS.
+% New Proposal format:
+%   (1) the fixed-up summary from the "proposal" memo
+%   (2) a revised and concrete set of questions that you tackled
+%   (3) a description of the approach used to answer them
+%   (4) your answers (abstractly, because you have a limited amount of space)
 
-% TODO: talk about bugs and A-reduction redex model
 % As a side effect, we also think this project will help us discover to how a
 % tool such as Redex is useful to programming language researchers in the
 % real world. For example, as we began implementing a model of the paper,
@@ -130,13 +81,5 @@ paper, which had initially appeared puzzling or incomplete.
 
 \bibliographystyle{abbrvnat}
 \bibliography{refs}
-
-% \includeracket{cs}
-% \includeracket{cs-cek}
-% \includeracket{cps}
-% \includeracket{cps-ce}
-% \includeracket{cps-cek}
-% \includeracket{a}
-% \includeracket{a-cek}
 
 \end{document}
