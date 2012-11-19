@@ -1,10 +1,10 @@
-all: proposal.pdf
+all: memo.pdf
 
-proposal.pdf: proposal.tex refs.bib
-	pdflatex proposal
-	bibtex proposal
-	pdflatex proposal
-	pdflatex proposal
+memo.pdf: memo.tex refs.bib
+	pdflatex memo
+	bibtex memo
+	pdflatex memo
+	pdflatex memo
 
 clean:
 	rm -rf *.tar.gz *.pdf *~ *.aux *.log *.bbl *.blg appendix
