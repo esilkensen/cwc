@@ -3,6 +3,7 @@
 \usepackage{fancyhdr}
 \usepackage[margin=1.5in]{geometry}
 \usepackage[numbers]{natbib}
+\usepackage{stmaryrd}
 
 \renewcommand{\bibsection}{\begin{flushleft}\textbf{\refname}\end{flushleft}}
 
@@ -55,13 +56,46 @@ CEK machine for CPS. We also wanted to implement the $A$-normalization
 algorithm as a reduction relation using the evaluation contexts defined in the
 paper, whose presentation appeared puzzling to us at first.
 
+We transcribed the figures in the paper into language definitions,
+metafunctions, and reduction relations in Redex. By running the transformations
+on concrete examples, we gained more of an intuition for how they work. After
+reading over the CEK machines a second time in order to implement them, we were
+able to see the redundancies the authors discuss---how the machine for CPS
+ignores the explicit continuation closures and instead manipulates the
+continuation register. For the $A$-normalization algorithm, we included
+additional rules to allow reducible expressions to appear in the bodies of
+\textbf{let} and \textbf{if0} terms, for example, since these cases weren't
+covered by the evaluation contexts defined in the paper. Alternatively, we
+could have defined a metafunction according to the code in the paper's
+appendix.
+
+As a side effect, this project also helped us discover how a tool such as Redex
+is useful to programming language researchers in the real world. For example,
+as we began implementing a model of the paper, we noticed two small typos. In
+particular, for the na\"{i}ve transformation (where $\mathcal{F}$ is due
+to~\citet{Fischer:1993ys}), $\mathcal{F}\llbracket{M\rrbracket}$ should be
+$(\mathcal{F}\llbracket{M\rrbracket}\ k)$ in
+$\Phi\llbracket{\lambda{k x_1 \ldots x_n}.M\rrbracket} =
+\lambda{x_1 \ldots x_n}.\mathcal{F}\llbracket{M\rrbracket};$
+and for the inverse transformation,
+$\mathcal{U}\llbracket{M\rrbracket}$ should be
+$\mathcal{U}\llbracket{P\rrbracket}$ in
+$\Psi\llbracket{\lambda{k x_1 \ldots x_n}.P\rrbracket} =
+\lambda{x_1 \ldots x_n}.\mathcal{U}\llbracket{M\rrbracket}.$
+These typos are easy to catch when one tries running the transformations as
+they appear in the paper; Redex can render typeset figures of models, which
+authors could use to avoid introducing errors (perhaps such as these) during
+manual transcription into \LaTeX.
+%
+% \citet{Klein:2012uq} 
+
 % New Proposal format:
 %   (1) the fixed-up summary from the "proposal" memo
 %   (2) a revised and concrete set of questions that you tackled
 %   (3) a description of the approach used to answer them
 %   (4) your answers (abstractly, because you have a limited amount of space)
 
-% As a side effect, we also think this project will help us discover to how a
+% As a side effect, we also think this project will help us discover how a
 % tool such as Redex is useful to programming language researchers in the
 % real world. For example, as we began implementing a model of the paper,
 % we noticed what seem to be two typos in the na\"{i}ve and inverse CPS
