@@ -1,9 +1,6 @@
 *~
 compiled/
-appendix/
-*.pdf
 *.aux
 *.log
 *.blg
 *.bbl
-*.tar.gz
