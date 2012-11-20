@@ -626,10 +626,6 @@
   (define-metafunction A
     [(assert M) M])
   
-  (define-metafunction A
-    [(not-anf M) #f]
-    [(not-anf any) #t])
-  
   (define-metafunction CS+E
     not-hole : E -> #t or #f
     [(not-hole hole) #f]
