@@ -3,6 +3,7 @@
 \usepackage{fancyhdr}
 \usepackage[margin=1.5in]{geometry}
 \usepackage[numbers]{natbib}
+\usepackage{semantic}
 \usepackage{stmaryrd}
 
 \renewcommand{\bibsection}{\begin{flushleft}\textbf{\refname}\end{flushleft}}
@@ -62,12 +63,38 @@ on concrete examples, we gained more of an intuition for how they work. After
 reading over the CEK machines a second time in order to implement them, we were
 able to see the redundancies the authors discuss---how the machine for CPS
 ignores the explicit continuation closures and instead manipulates the
-continuation register. For the $A$-normalization algorithm, we included
-additional rules to allow reducible expressions to appear in the bodies of
-\textbf{let} and \textbf{if0} terms, for example, since these cases weren't
-explicitly covered by the evaluation contexts defined in the paper.
-Alternatively, we could have defined a metafunction according to the code in
-the paper's appendix.
+continuation register.
+%
+For the $A$-normalization algorithm, we defined a second set $Q$ of evaluation
+contexts to allow reducible expressions to appear in the bodies of \textbf{let}
+and \textbf{if0} terms, for example, when their binding and test expressions
+(respectively) are already in $A$-normal form, since this wasn't provided for
+by the $E$ contexts defined in the paper.
+%
+The complete set of evaluation contexts we used is given below.
+\[
+\begin{array}{lcl}
+  E & ::= & [\ ]\; |\; (\textbf{let}\ (x\ E)\ M)\; |\;
+  (\textbf{if0}\ E\ M\ M)\; |\; (F\ V\ \cdots\ E\ M\ \cdots) \\[3pt]
+  Q & ::= & [\ ]\; |\; (\textbf{let}\ (x\ V)\ Q)\; |\;
+  (\textbf{let}\ (x\ (F\ V\ \cdots))\ Q)\; |\;
+  (\textbf{if0}\ V\ Q\ M)\; |\; (\textbf{if0}\ V\ M\ Q)
+\end{array}
+\]
+Finally, we take the closure of the $A$-reductions ($\longrightarrow$) with
+respect to the $Q$ contexts, which we can implement using a \texttt{with}
+clause in Redex.
+\[
+\inference{
+  M \longrightarrow M'
+  % M \longrightarrow_{Ai} M' &
+  % i=1,2,3
+}{
+  Q[M] \longmapsto_A Q[M']
+}
+\]
+% Alternatively, we could have defined a metafunction according to the code in
+% the paper's appendix.
 
 As a side effect, this project also helped us discover how a tool such as Redex
 is useful to programming language researchers in the real world. For example,
