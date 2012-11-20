@@ -589,35 +589,32 @@
   
   ;; Evaluation Contexts:
   (define-extended-language CS+E CS
+    ;; context for terms yet to be turned into ANF
     (E hole (let (x E) M) (if0 E M M) (F V ... E M ...))
+    ;; context for terms already in ANF
+    (Q hole (let (x V) Q) (let (x (F V ...)) Q) (if0 V Q M) (if0 V M Q))
     (F O V))
   
   ;; The A-reductions:
   (define ->A
     (reduction-relation
      CS+E
-     [--> (in-hole E (let (x_1 M_1) M_2))
-          (let (x_2 M_1) (cs->anf (in-hole E (subst M_2 x_1 x_2))))
+     [--> (in-hole Q (in-hole E (let (x_1 M_1) M_2)))
+          (in-hole Q (let (x_2 M_1) (in-hole E (subst M_2 x_1 x_2))))
           (where x_2 ,(variable-not-in (term E) (term x_1)))
           (side-condition (term (not-hole E)))
           "A1"]
-     [--> (in-hole E (if0 V M_1 M_2))
-          (if0 V (cs->anf (in-hole E M_1)) (cs->anf (in-hole E M_2)))
+     [--> (in-hole Q (in-hole E (if0 V M_1 M_2)))
+          (in-hole Q (if0 V (in-hole E M_1) (in-hole E M_2)))
           (side-condition (term (not-hole E)))
           "A2"]
-     [--> (in-hole E (F V ...))
-          (let (x (F V ...)) (cs->anf (in-hole E x)))
+     [--> (in-hole Q (in-hole E (F V ...)))
+          (in-hole Q (let (x (F V ...)) (in-hole E x)))
           (where x ,(variable-not-in (term E) (term t1)))
           (side-condition
            (and (term (not-hole E))
                 (term (not-let-hole E))))
-          "A3"]
-     [--> (let (x V) M)
-          (let (x V) (cs->anf M))
-          (side-condition (term (not-anf M)))]
-     [--> (if0 V M_1 M_2)
-          (if0 V (cs->anf M_1) (cs->anf M_2))
-          (side-condition (or (term (not-anf M_1)) (term (not-anf M_2))))]))
+          "A3"]))
   
   ;; Transforming a CS term to A-normal form:
   (define-metafunction CS+E
