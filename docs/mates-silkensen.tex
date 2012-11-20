@@ -49,13 +49,14 @@ forms realizes the essence of compiling with continuations, without requiring
 a multi-stage CPS transformation.
 
 While we understood \citeauthor{Flanagan:1993fk}'s reasoning at a high level
-after an initial reading, we planned to try and grasp the subtleties of the
-abstract machines and language transformations by implementing them in Redex.
-Specifically, we were interested in better understanding how programs change
-throughout the transformations and how redundancies are removed from the
-CEK machine for CPS. We also wanted to implement the $A$-normalization
-algorithm as a reduction relation using the evaluation contexts defined in the
-paper, whose presentation appeared puzzling to us at first.
+after an initial reading, for this project we planned to try and grasp the
+subtleties of the abstract machines and language transformations by
+implementing them in Redex. Specifically, we were interested in better
+understanding how programs change throughout the transformations and how
+redundancies are removed from the CEK machine for CPS. We also wanted to
+implement the $A$-normalization algorithm as a reduction relation using the
+evaluation contexts defined in the paper, whose presentation appeared puzzling
+to us at first.
 
 We transcribed the figures in the paper into language definitions,
 metafunctions, and reduction relations in Redex. By running the transformations
