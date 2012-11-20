@@ -57,22 +57,25 @@
 (define ->A
   (reduction-relation
    CS+E
-   [--> (in-hole Q (in-hole E (let (x_1 M_1) M_2)))
-        (in-hole Q (let (x_2 M_1) (in-hole E (subst M_2 x_1 x_2))))
+   [==> (in-hole E (let (x_1 M_1) M_2))
+        (let (x_2 M_1) (in-hole E (subst M_2 x_1 x_2)))
         (where x_2 ,(variable-not-in (term E) (term x_1)))
         (side-condition (term (not-hole E)))
         "A1"]
-   [--> (in-hole Q (in-hole E (if0 V M_1 M_2)))
-        (in-hole Q (if0 V (in-hole E M_1) (in-hole E M_2)))
+   [==> (in-hole E (if0 V M_1 M_2))
+        (if0 V (in-hole E M_1) (in-hole E M_2))
         (side-condition (term (not-hole E)))
         "A2"]
-   [--> (in-hole Q (in-hole E (F V ...)))
-        (in-hole Q (let (x (F V ...)) (in-hole E x)))
+   [==> (in-hole E (F V ...))
+        (let (x (F V ...)) (in-hole E x))
         (where x ,(variable-not-in (term E) (term t1)))
         (side-condition
          (and (term (not-hole E))
               (term (not-let-hole E))))
-        "A3"]))
+        "A3"]
+   with
+   [(--> (in-hole Q M_1) (in-hole Q M_2))
+    (==> M_1 M_2)]))
 
 ;; Transforming a CS term to A-normal form:
 (define-metafunction CS+E
