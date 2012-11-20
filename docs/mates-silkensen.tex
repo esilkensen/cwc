@@ -64,38 +64,41 @@ reading over the CEK machines a second time in order to implement them, we were
 able to see the redundancies the authors discuss---how the machine for CPS
 ignores the explicit continuation closures and instead manipulates the
 continuation register.
-
-For the $A$-normalization algorithm, we defined a second set $Q$ of evaluation
-contexts to allow reducible expressions to appear in the bodies of \textbf{let}
-and \textbf{if0} terms, for example, when their binding and test expressions
-(respectively) are already in $A$-normal form, since this wasn't provided for
-by the $E$ contexts defined in the paper.
+%
+For the $A$-normalization algorithm, we defined a second set %$Q$
+of evaluation contexts to allow reducible expressions to appear in the bodies
+of \textbf{let} and \textbf{if0} terms, for example, when their binding and
+test expressions (respectively) are already in $A$-normal form, since this
+wasn't provided for by the %$E$
+contexts defined in the paper.
 %
 % Do you think we should include the definitions in the memo?  I guess I would
 % be fine either way, and there's plenty of space.
 % -Erik
 %
-The complete set of evaluation contexts we used is given below.
-\[
-\begin{array}{lcl}
-  E & ::= & [\ ]\; |\; (\textbf{let}\ (x\ E)\ M)\; |\;
-  (\textbf{if0}\ E\ M\ M)\; |\; (F\ V\ \cdots\ E\ M\ \cdots) \\[3pt]
-  Q & ::= & [\ ]\; |\; (\textbf{let}\ (x\ V)\ Q)\; |\;
-  (\textbf{let}\ (x\ (F\ V\ \cdots))\ Q)\; |\;
-  (\textbf{if0}\ V\ Q\ M)\; |\; (\textbf{if0}\ V\ M\ Q)
-\end{array}
-\]
-Finally, we took the closure of the $A$-reductions ($\longrightarrow_A$) with
-respect to the $Q$ contexts, which finished the implementation.
-\[
-\inference{
-  M \longrightarrow_A M'
-  % M \longrightarrow_{Ai} M' &
-  % i=1,2,3
-}{
-  Q[M] \longmapsto_A Q[M']
-}
-\]
+%The complete set of evaluation contexts we used is given below.
+% \[
+% \begin{array}{lcl}
+% E & ::= & [\ ]\; |\; (\textbf{let}\ (x\ E)\ M)\; |\;
+% (\textbf{if0}\ E\ M\ M)\; |\; (F\ V\ \cdots\ E\ M\ \cdots) \\[3pt]
+% Q & ::= & [\ ]\; |\; (\textbf{let}\ (x\ V)\ Q)\; |\;
+% (\textbf{let}\ (x\ (F\ V\ \cdots))\ Q)\; |\;
+% (\textbf{if0}\ V\ Q\ M)\; |\; (\textbf{if0}\ V\ M\ Q)
+% \end{array}
+% \]
+We implemented the algorithm by taking the closure of the $A$-reductions with
+respect to the new contexts.
+% Finally, we took the closure of the $A$-reductions ($\longrightarrow_A$) with
+% respect to the $Q$ contexts, which finished the implementation.
+% \[
+% \inference{
+% M \longrightarrow_A M'
+% % M \longrightarrow_{Ai} M' &
+% % i=1,2,3
+% }{
+% Q[M] \longmapsto_A Q[M']
+% }
+% \]
 % Alternatively, we could have defined a metafunction according to the code in
 % the paper's appendix.
 
