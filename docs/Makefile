@@ -1,10 +1,10 @@
-all: memo.pdf
+all: mates-silkensen.pdf
 
-memo.pdf: memo.tex refs.bib
-	pdflatex memo
-	bibtex memo
-	pdflatex memo
-	pdflatex memo
+memo.pdf: mates-silkensen.tex refs.bib
+	pdflatex mates-silkensen
+	bibtex mates-silkensen
+	pdflatex mates-silkensen
+	pdflatex mates-silkensen
 
 clean:
-	rm -rf *.tar.gz *.pdf *~ *.aux *.log *.bbl *.blg appendix
+	rm -rf *~ *.pdf *.aux *.log *.bbl *.blg
