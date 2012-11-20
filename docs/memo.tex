@@ -81,12 +81,12 @@ The complete set of evaluation contexts we used is given below.
   (\textbf{if0}\ V\ Q\ M)\; |\; (\textbf{if0}\ V\ M\ Q)
 \end{array}
 \]
-Finally, we take the closure of the $A$-reductions ($\longrightarrow$) with
+Finally, we take the closure of the $A$-reductions ($\longrightarrow_A$) with
 respect to the $Q$ contexts, which we can implement using a \texttt{with}
 clause in Redex.
 \[
 \inference{
-  M \longrightarrow M'
+  M \longrightarrow_A M'
   % M \longrightarrow_{Ai} M' &
   % i=1,2,3
 }{
