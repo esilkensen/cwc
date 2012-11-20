@@ -1,6 +1,6 @@
 all: mates-silkensen.pdf
 
-memo.pdf: mates-silkensen.tex refs.bib
+mates-silkensen.pdf: mates-silkensen.tex refs.bib
 	pdflatex mates-silkensen
 	bibtex mates-silkensen
 	pdflatex mates-silkensen
