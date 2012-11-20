@@ -267,7 +267,7 @@
   ;; This submodule defines the abstract syntax of Core Scheme (CS) in
   ;; Continuation-Passing Style (CPS) and a transformation from CS to CPS.
   
-  (provide CPS cps)
+  (provide CPS cs->cps)
   
   (require redex/reduction-semantics (submod ".." cs))
   
@@ -284,8 +284,8 @@
   
   ;; Transforming a CS term to β-normal form:
   (define-metafunction CPS
-    cps : M -> W
-    [(cps M) (let-simp (simp (F M)))])
+    cs->cps : M -> W
+    [(cs->cps M) (let-simp (simp (F M)))])
   
   ;; A second simplification phase (β for let):
   (define-metafunction CPS
@@ -390,7 +390,7 @@
   (define e1 (term (+ (+ 2 2) (let (x 1) (f x)))))
   (define e1-simp
     (term (λ (k) (+ (λ (t1) (let (x 1) (f (λ (t2) (+ k t1 t2)) x))) 2 2))))
-  (test-equal (term (=α (cps ,e1) ,e1-simp)) #t))
+  (test-equal (term (=α (cs->cps ,e1) ,e1-simp)) #t))
 
 ;; ============================================================================
 
@@ -464,7 +464,7 @@
 (module+ test
   (displayln "Testing module cps-ce...")
   (for ([p P] [r R])
-    (test-equal (term (eval-n (cps ,p))) r)))
+    (test-equal (term (eval-n (cs->cps ,p))) r)))
 
 ;; ============================================================================
 
@@ -537,7 +537,7 @@
 (module+ test
   (displayln "Testing module cps-cek...")
   (for ([p P] [r R])
-    (test-equal (term (eval-c (cps ,p))) r)))
+    (test-equal (term (eval-c (cs->cps ,p))) r)))
 
 ;; ============================================================================
 
@@ -563,12 +563,12 @@
   
   ;; Transforming a CS term to CPS and then to A-normal form:
   (define-metafunction CS
-    [(cs->cps->anf M) (anf (cps M))])
+    [(cs->cps->anf M) (cps->anf (cs->cps M))])
   
   ;; Transforming a CPS term to A-normal form:
   (define-metafunction A
-    anf : W -> M
-    [(anf (λ (k) P)) (U P)])
+    cps->anf : W -> M
+    [(cps->anf (λ (k) P)) (U P)])
   
   ;; The inverse CPS transformation (U):
   (define-metafunction A
